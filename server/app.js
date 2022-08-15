@@ -14,11 +14,13 @@ require("dotenv").config();
 mongoose.connect(process.env.PW_EVENTS);
 const db = mongoose.connection;
 //----Middleware ----
+app.use(express.json());
+//-------------------------
 const eventsrouter = require("./routes/events");
 const posteventrouter = require("./routes/events");
-app.use("/home", eventsrouter);
+app.use("/home", posteventrouter);
+app.use("/home/", eventsrouter);
 
-//----------------------------
 //test connection status
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 db.once("open", function () {

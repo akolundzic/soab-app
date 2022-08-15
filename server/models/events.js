@@ -8,10 +8,11 @@ const eventsSchema = new Schema(
       id: Number,
       name: String,
     },
-    // date: Date,
-    // location: { type: String, required: true },
-    // image: String,
-    // description: { type: String, required: true },
+    date: Date,
+    location: String,
+    time: String,
+    image: String,
+    description: String,
   },
 
   { collection: "events" }
