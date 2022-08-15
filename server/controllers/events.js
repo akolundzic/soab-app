@@ -27,7 +27,44 @@ const getEvents = async function (req, res, next) {
   }
 };
 
+const postEvents = async function (req, res) {
+  // const { user, date, location, image, description } = req.body;
+  console.log(req.body);
+  // eventsschema.create({
+  //   user: {
+  //     id: user.id,
+  //     name: user.name,
+  //   },
+  //   date: Date(),
+  //   location: location,
+  //   image: image,
+  //   description: description,
+  // });
+  res.send("201");
+  // console.log(
+  //   "user:" +
+  //     user +
+  //     "" +
+  //     "date: " +
+  //     date +
+  //     "location: " +
+  //     location +
+  //     "image: " +
+  //     image +
+  //     "" +
+  //     "location:" +
+  //     location +
+  //     "" +
+  //     "description :" +
+  //     description
+  // );
+  // .then(function (newMessage) {
+  //   res.send(newMessage);
+  // });
+};
+
 //Initialize
 module.exports = {
   getEvents: getEvents,
+  postEvents: postEvents,
 };

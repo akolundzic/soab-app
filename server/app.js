@@ -4,8 +4,7 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 // const usersRouter = require("./routes/users");
-//----Middleware ----
-const eventsrouter = require("./routes/events");
+
 const app = express();
 const PORT = process.env.PORT || 8000;
 const mongoose = require("mongoose");
@@ -14,6 +13,12 @@ require("dotenv").config();
 //connection to database
 mongoose.connect(process.env.PW_EVENTS);
 const db = mongoose.connection;
+//----Middleware ----
+const eventsrouter = require("./routes/events");
+const posteventrouter = require("./routes/events");
+app.use("/home", eventsrouter);
+
+//----------------------------
 //test connection status
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 db.once("open", function () {

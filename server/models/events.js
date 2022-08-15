@@ -3,15 +3,15 @@ const Schema = mongoose.Schema;
 
 const eventsSchema = new Schema(
   {
-    user_id: {
+    user: {
       //retrieves user id from database users
-      type: Number,
-      required: true,
+      id: Number,
+      name: String,
     },
-    date: Date,
-    location: { type: String, required: true },
-    image: Buffer,
-    description: { type: String, required: true },
+    // date: Date,
+    // location: { type: String, required: true },
+    // image: String,
+    // description: { type: String, required: true },
   },
 
   { collection: "events" }
