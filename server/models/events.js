@@ -3,18 +3,29 @@ const Schema = mongoose.Schema;
 
 const eventsSchema = new Schema(
   {
-    user: {
-      //retrieves user id from database users
-      id: Number,
-      name: String,
+    date: {
+      type: Date,
+      required: true,
     },
-    date: Date,
-    location: String,
-    time: String,
+    time: { type: String, required: true },
+    venueName: {
+      type: String,
+      trim: true,
+      required: true,
+    },
+    address: {
+      street: { type: String, trim: true },
+      number: { type: Number },
+      district: { type: String, trim: true },
+    },
+    eventName: {
+      type: String,
+      trim: true,
+    },
+    description: { type: String, trim: true },
+    //url string - later on multer
     image: String,
-    description: String,
   },
-
   { collection: "events" }
 );
 const eventsschema = mongoose.model("events", eventsSchema);

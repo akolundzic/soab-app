@@ -4,62 +4,55 @@ app.use(express.json());
 const mongoose = require("mongoose");
 const { eventsschema } = require("../models/events");
 
-const getEvents = async function (req, res, next) {
+const getEvents = async function (req, res, filter) {
   const query = req.params.events;
-  const filter = null;
-  const arr = ["time", "date", "district"];
-  //
-  res.send(query);
-
-  // try {
-  //   // await eventsschema.find({ filter }, (err, data) => res.send(data));
-  //   // res.send(await Object.entries(eventsschema));
-
-  //   res.send(query + " , " + filter);
-  //   // });
-  // } catch (err) {
-  //   console.log(err.message);
-  //   res.status(404).send("No data found, query is:" + req.params.query);
-  // }
+  try {
+    await eventsschema
+      .find({ filter })
+      .sort({ date: 1 })
+      .then(res.send(await Object.entries(eventsschema)));
+  } catch (err) {
+    console.log(err.message);
+    res.status(404).send("No data found, query is:" + req.params.events);
+  }
 };
 
-const postEvents = (req, res) => {
-  const { user, date, time, district, image, city, description } = req.body;
-
-  eventsschema
-    .create({
-      user: {
-        id: user.id,
-        name: user.name,
-      },
-      date: date,
-      city: city,
-      district: district,
-      time: time,
-      image: image,
-      description: description,
-    })
-    .then(function (newMessage) {
-      res.send(newMessage);
-    });
-
-  // console.log(
-  //   "user:" +
-  //     user +
-  //     "" +
-  //     "date: " +
-  //     date +
-  //     "location: " +
-  //     location +
-  //     "image: " +
-  //     image +
-  //     "" +
-  //     "location:" +
-  //     location +
-  //     "" +
-  //     "description :" +
-  //     description
-  // );
+const postEvents = async (req, res) => {
+  const {
+    date,
+    time,
+    venueName,
+    city,
+    address,
+    image,
+    eventName,
+    description,
+  } = await req.body;
+  try {
+    eventsschema
+      .create({
+        date: date,
+        time: time,
+        city: city,
+        venueName: venueName,
+        address: {
+          street: address.street,
+          number: address.number,
+          district: address.district,
+        },
+        eventName: eventName,
+        description: description,
+        //url string - later on multer
+        image: image,
+      })
+      .then(async function (data) {
+        console.log(data);
+        res.send(await data);
+        // res.send(venueName);
+      });
+  } catch (err) {
+    res.status(422).send(err.message);
+  }
 };
 
 //Initialize
