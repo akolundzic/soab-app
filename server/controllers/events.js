@@ -5,15 +5,15 @@ const mongoose = require("mongoose");
 const { eventsschema } = require("../models/events");
 
 const getEvents = async function (req, res, filter) {
-  
   try {
     await eventsschema
-      .find({ filter })
+      .find(filter)
       .sort({ date: 1 })
-      .then(res.send(await Object.entries(eventsschema)));
+      .then((dbModel) => res.json(dbModel));
   } catch (err) {
     console.log(err.message);
-    res.status(404).send("No data found, query is:" + req.params.events);
+    res.status(404).send("No data found");
+    console.log(req.params);
   }
 };
 
@@ -29,7 +29,7 @@ const postEvents = async (req, res) => {
     description,
   } = await req.body;
   try {
-    eventsschema
+    await eventsschema
       .create({
         date: date,
         time: time,
@@ -54,9 +54,30 @@ const postEvents = async (req, res) => {
     res.status(422).send(err.message);
   }
 };
+const updateEvent = async function (req, res) {
+  try {
+    await eventsschema
+      .findOneAndUpdate({ _id: req.params.id }, req.body)
+      .then((data) => res.json(data));
+  } catch (err) {
+    res.status(422).send(err.message);
+  }
+};
+const removeEvent = async function (req, res) {
+  try {
+    await eventsschema
+      .findById({ _id: req.params.id })
+      .then((data) => data.remove())
+      .then((data) => res.json(data));
+  } catch (err) {
+    res.status(422).send(err.message);
+  }
+};
 
 //Initialize
 module.exports = {
   getEvents: getEvents,
   postEvents: postEvents,
+  removeEvent: removeEvent,
+  updateEvent: updateEvent,
 };

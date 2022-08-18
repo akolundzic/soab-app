@@ -3,12 +3,9 @@ const Schema = mongoose.Schema;
 
 const eventsSchema = new Schema(
   {
-    date: {
-      day: String,
-      month: String,
-      year: String,
-    },
+    date: { type: Date, required: true },
     time: { type: String, required: true },
+    
     venueName: {
       type: String,
       trim: true,
