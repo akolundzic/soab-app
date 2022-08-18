@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const { eventsschema } = require("../models/events");
 
 const getEvents = async function (req, res, filter) {
-  const query = req.params.events;
+  
   try {
     await eventsschema
       .find({ filter })

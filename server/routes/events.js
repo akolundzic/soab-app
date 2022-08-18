@@ -5,7 +5,12 @@ app.use(express.json());
 const router = express.Router();
 const controller = require("../controllers/events");
 // router.get("/:events", controller.getEvents);
+const filter = {};
 router.post("/events", controller.postEvents);
-router.get("/:events", controller.getEvents);
+router.get("/events", async function (req, res,filter) {
+    controller.getEvents(filter);
+
+});
+// router.get("/:events:", controller.getEvents);
 
 module.exports = router;
