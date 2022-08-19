@@ -4,7 +4,7 @@ const usersSchema = new Schema(
   {
     name: { type: String, required: true },
     surname: { type: String },
-    date: Date,
+    date: Date ,
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     image: Buffer,
