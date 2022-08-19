@@ -10,18 +10,17 @@ Empirical studies have shown that almost 50% percent of people experienced sexua
 The data base consists of two parts for events and users. The users can be assigned ideally different roles. Mongodb is used as a data platform.
 
 ## User Stories
-
--Signup: can sign into the platform after admin's approval. 
--Login: can login but also log out at the exit point
--Logout: can log out
--Create event: as an user I can add events to the event's list
--Edit event: as an user I can edit the events
--Delete event as an user I can delete my own created event
--View Events as an user I can see the events as a list showing the events ascending date order
--Filter event as a user I can filter the events according to the day or district and chose the location
--Edit User as an user I can edit my profile
--Delete User as an user I can also delete my profile
--Nav bar with help function as an user I get further contact details and help links in case of mental support
+ **Signup**: can sign into the platform after admin's approval. 
+- **Login**: can login but also log out at the exit point
+- **Logout** can log out
+- **Create event** as an user I can add events to the event's list
+- **Edit event** as an user I can edit the events
+- **Delete event** as an user I can delete my own created event
+- **View Events** as an user I can see the events as a list showing the events ascending date order
+- **Filter event** as a user I can filter the events according to the day or district and chose the location
+- **Edit User** as an user I can edit my profile
+- **Delete User** as an user I can also delete my profile
+- **Nav bar with help function** as an user I get further contact details and help links in case of mental support
 
 ### nice to have
 - chat for messaging 
