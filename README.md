@@ -22,6 +22,7 @@ The data base consists of two parts for events and users. The users can be assig
 -**Edit User** as an user I can edit my profile
 -**Delete User** as an user I can also delete my profile
 -**Nav bar with help function** as an user I get further contact details and help links in case of mental support
+
 ### nice to have
 - chat for messaging 
 - user role can change
