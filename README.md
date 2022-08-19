@@ -15,7 +15,7 @@ The data base consists of two parts for events and users. The users can be assig
 -Login: can login but also log out at the exit point
 -Logout: can log out
 -Create event: as an user I can add events to the event's list
--Edit event** as an user I can edit the events
+-Edit event: as an user I can edit the events
 -Delete event as an user I can delete my own created event
 -View Events as an user I can see the events as a list showing the events ascending date order
 -Filter event as a user I can filter the events according to the day or district and chose the location
