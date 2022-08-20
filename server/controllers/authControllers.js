@@ -1,4 +1,8 @@
 //Initialize
+const User = require("../models/users");
+// const bcrypt = require("bcryptjs");
+const multer = require("multer");
+
 const getSingup = async (req, res) => {
   res.send("signup");
 };
@@ -10,7 +14,9 @@ const postSignup = async (req, res) => {
   res.send("new signup");
 };
 const postLogin = async (req, res) => {
-  res.send("user login");
+  const { name, surname, date, email, password, image } = req.body;
+
+  res.send(req.body);
 };
 
 module.exports = {

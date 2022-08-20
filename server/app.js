@@ -9,17 +9,18 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 const mongoose = require("mongoose");
 const cors = require("cors");
+const eventsrouter = require("./routes/events");
+const posteventrouter = require("./routes/events");
+const userroutes = require("./routes/users");
 require("dotenv").config();
 //connection to database
 mongoose.connect(process.env.PW_EVENTS);
 const db = mongoose.connection;
 //----Middleware ----
 app.use(express.json());
-//-------------------------
-const eventsrouter = require("./routes/events");
-const posteventrouter = require("./routes/events");
 app.use("/home", posteventrouter);
 app.use("/home/", eventsrouter);
+app.use("/home/", userroutes);
 
 //test connection status
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
