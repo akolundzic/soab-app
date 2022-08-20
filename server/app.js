@@ -20,7 +20,7 @@ const db = mongoose.connection;
 app.use(express.json());
 app.use("/home", posteventrouter);
 app.use("/home/", eventsrouter);
-app.use("/home/", userroutes);
+app.use("/auth/", userroutes);
 
 //test connection status
 db.on("error", console.error.bind(console, "MongoDB connection error:"));

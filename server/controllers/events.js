@@ -3,6 +3,10 @@ const app = express();
 app.use(express.json());
 const mongoose = require("mongoose");
 const { eventsschema } = require("../models/events");
+//handle errors
+const handleErrors = (err) => {
+  return [err.message, err.code];
+};
 
 const getEvents = async function (req, res, filter) {
   try {
@@ -45,11 +49,11 @@ const postEvents = async (req, res) => {
         //url string - later on multer
         image: image,
       })
-      .then(async function (data) {
-        console.log(data);
-        res.send(await data);
-        // res.send(venueName);
+      .then((data) => {
+        console.log(handleErrors(err));
+        res.status(201).json(data);
       });
+    // res.send(venueName);
   } catch (err) {
     res.status(422).send(err.message);
   }
@@ -58,7 +62,9 @@ const updateEvent = async function (req, res) {
   try {
     await eventsschema
       .findOneAndUpdate({ _id: req.params.id }, req.body)
-      .then((data) => res.json(data));
+      .then((data) => {
+        res.status(201).json(data);
+      });
   } catch (err) {
     res.status(422).send(err.message);
   }
@@ -68,7 +74,9 @@ const removeEvent = async function (req, res) {
     await eventsschema
       .findById({ _id: req.params.id })
       .then((data) => data.remove())
-      .then((data) => res.json(data));
+      .then((data) => {
+        res.status(201).json(data);
+      });
   } catch (err) {
     res.status(422).send(err.message);
   }
