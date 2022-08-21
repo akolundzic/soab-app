@@ -11,7 +11,7 @@ const usersSchema = new Schema(
       required: [true, "Please enter a valid email address"],
       unique: true,
       lowercase: true,
-      // validate: [isEmail, "Please enter a valid email address"],
+      validate: [isEmail, "Please provide valid email"],
     },
     password: {
       type: String,

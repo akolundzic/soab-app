@@ -1,5 +1,8 @@
 //Initialize
 const { usersschema } = require("../models/users");
+const handleErrors = (err) => {
+  console.log(err.message);
+};
 
 // const bcrypt = require("bcryptjs");
 const multer = require("multer");
@@ -15,8 +18,11 @@ const postSignup = async (req, res) => {
   let now = new Date();
   const { name, surname, date, email, password, image } = req.body;
   try {
-    await usersschema.findOne({ email: email }).then((doc) => {
-      if (doc) {
+    // if (doc) {
+    //   res.send("User Already Exists");
+    // } else {
+    await usersschema.findOne({ email: email }, function (user) {
+      if (user) {
         res.send("User Already Exists");
       } else {
         usersschema
@@ -34,7 +40,9 @@ const postSignup = async (req, res) => {
       }
     });
   } catch (err) {
-    res.status(422).send(err.message);
+    console.log("catch block  ");
+    // handleErrors(err);
+    res.send("Creation not possible");
   }
 };
 const postLogin = async (req, res) => {
