@@ -23,5 +23,10 @@ const usersSchema = new Schema(
 
   { collection: "users" }
 );
+// usersSchema.post("save", (doc, next) => {
+//   console.log("new user was created " + doc);
+//   next();
+// });
+
 const usersschema = mongoose.model("users", usersSchema);
 module.exports = { usersschema };
