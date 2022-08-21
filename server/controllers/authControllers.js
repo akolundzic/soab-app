@@ -1,7 +1,13 @@
 //Initialize
 const { usersschema } = require("../models/users");
-const handleErrors = (err) => {
-  console.log(err.message);
+const handleErrors = (obj) => {
+  let error = { email: "", password: "" };
+  if (obj.message.includes("users validation failed")) {
+    Object.values(obj.errors).forEach((error) => {
+      console.log("inside error function : ");
+    });
+  }
+  return error;
 };
 
 // const bcrypt = require("bcryptjs");
@@ -37,12 +43,14 @@ const postSignup = async (req, res) => {
           .then((data) => {
             res.status(201).json(data);
           });
+        //end if else statement
       }
+      //end function of finde one
     });
   } catch (err) {
-    console.log("catch block  ");
-    // handleErrors(err);
-    res.send("Creation not possible");
+    console.log("catch block  " + handleErrors(err));
+
+    res.status(404).send("user was not created");
   }
 };
 const postLogin = async (req, res) => {
