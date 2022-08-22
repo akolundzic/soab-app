@@ -16,6 +16,8 @@ require("dotenv").config();
 //connection to database
 mongoose.connect(process.env.PW_CONNECT);
 const db = mongoose.connection;
+// view engine
+app.set("view engine", "ejs");
 //----Middleware ----
 app.use(express.json());
 app.use("/home", posteventrouter);
@@ -37,13 +39,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-// app.use("/", indexRouter);
-// app.use("/users", usersRouter);
-
-// catch 404 and forward to error handler
-// app.use(function (req, res, next) {
-//   next(createError(404));
-// });
 app.get("/", function (req, res, next) {
   res.send("Welcome");
 });

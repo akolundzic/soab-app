@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const { isEmail } = require("validator");
+const bcrypt = require("bcrypt");
+
 const usersSchema = new Schema(
   {
     name: { type: String, required: true },
@@ -23,10 +25,14 @@ const usersSchema = new Schema(
 
   { collection: "users" }
 );
-// usersSchema.post("save", (doc, next) => {
-//   console.log("new user was created " + doc);
-//   next();
-// });
-
+usersSchema.post("save", function (doc, next) {
+  next();
+});
+usersSchema.pre("save", async function (next) {
+  const salt = await bcrypt.genSalt();
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
+});
+//fire a functin when ever new document is save to database
 const usersschema = mongoose.model("users", usersSchema);
 module.exports = { usersschema };

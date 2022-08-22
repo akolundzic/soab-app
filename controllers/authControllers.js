@@ -1,7 +1,14 @@
 //Initialize
 const { usersschema } = require("../models/users");
 let errors = { email: "", password: "" };
+
 const handleErrors = (err) => {
+  // console.log("in catch statement " + err.code);
+  //duplicate error code
+  if (err.code === 11000) {
+    errors.email = "This is a duplicate email address";
+    return errors;
+  }
   if (err.message.includes("users validation failed")) {
     Object.values(err.errors).forEach(({ properties }) => {
       errors[properties.path] = properties.message;
@@ -14,7 +21,7 @@ const handleErrors = (err) => {
 const multer = require("multer");
 
 const getSingup = async (req, res) => {
-  res.send("signup");
+  res.render("signup");
 };
 const getLogin = async (req, res) => {
   res.send("login");
@@ -42,6 +49,7 @@ const postSignup = async (req, res) => {
     });
   } catch (err) {
     const errors = handleErrors(err);
+    // console.log("errer Code is: " + err.code);
     res.status(404).json({ errors });
   }
 };
