@@ -21,8 +21,8 @@ app.set("view engine", "ejs");
 //----Middleware ----
 app.use(express.json());
 app.use("/home", posteventrouter);
-app.use("/home/", eventsrouter);
-app.use("/auth/", userroutes);
+app.use("/home", eventsrouter);
+app.use("/auth", userroutes);
 
 //test connection status
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
@@ -30,8 +30,9 @@ db.once("open", function () {
   console.log("MongoDB database connection established successfully");
 });
 // view engine setup
-// app.set("views", path.join(__dirname, "views"));
-// app.set("view engine", "jade");
+app.set("views", path.join(__dirname, "views"));
+// Set view engine as EJS
+app.engine("html", require("ejs").renderFile);
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -39,8 +40,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.get("/", function (req, res, next) {
-  res.send("Welcome");
+app.get("/", function (req, res) {
+  res.render("home");
 });
 
 // error handler
