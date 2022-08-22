@@ -24,7 +24,7 @@ const getSingup = async (req, res) => {
   res.render("signup");
 };
 const getLogin = async (req, res) => {
-  res.send("login");
+  res.render("login");
 };
 
 const postSignup = async (req, res) => {

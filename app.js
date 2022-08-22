@@ -32,7 +32,7 @@ db.once("open", function () {
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 // Set view engine as EJS
-app.engine("html", require("ejs").renderFile);
+// app.engine("html", require("ejs").renderFile);
 
 app.use(logger("dev"));
 app.use(express.json());
