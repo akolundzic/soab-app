@@ -1,14 +1,14 @@
 //Initialize
 const { usersschema } = require("../models/users");
-// const handleErrors = (obj) => {
-//   let errors = { email: "", password: "" };
-//   if (obj.message.includes("users validation failed")) {
-//     Object.values(obj.errors).forEach(({ properties }) => {
-//       // errors[properties.path] = errors.email.properties.message;
-//     });
-//   }
-//   return errors;
-// };
+let errors = { email: "", password: "" };
+const handleErrors = (err) => {
+  if (err.message.includes("users validation failed")) {
+    Object.values(err.errors).forEach(({ properties }) => {
+      errors[properties.path] = properties.message;
+    });
+  }
+  return errors;
+};
 
 // const bcrypt = require("bcryptjs");
 const multer = require("multer");
@@ -41,12 +41,8 @@ const postSignup = async (req, res) => {
       }
     });
   } catch (err) {
-    res.status(404).send("not able to create user");
-    // if (err.message.includes("users validation failed")) {
-    //   res.status(404).send("includes");
-    // } else {
-    //   res.status(404).send(err.message);
-    // }
+    const errors = handleErrors(err);
+    res.status(404).json({ errors });
   }
 };
 const postLogin = async (req, res) => {

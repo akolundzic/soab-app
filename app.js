@@ -14,7 +14,7 @@ const posteventrouter = require("./routes/events");
 const userroutes = require("./routes/users");
 require("dotenv").config();
 //connection to database
-mongoose.connect(process.env.PW_EVENTS);
+mongoose.connect(process.env.PW_CONNECT);
 const db = mongoose.connection;
 //----Middleware ----
 app.use(express.json());
