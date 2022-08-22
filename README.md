@@ -6,9 +6,6 @@ This app focus of inclusion of survivors of sexual abuse suffering from PTSD sym
 **Why do we need such an app?***
 Empirical studies have shown that almost 50% percent of people experienced sexual abuse and violence commit suicide with a abuse prevalence rate for about 10.7% to 17.4% for children. This is a silent pandemic and the key for spreading is isolation. This app gives survivors the opportunity to meet people with similar experience in order to create a more save community.  This app should be accompanied by social workers who also can create events. Participants have also the opportunity to create their own events which are open for others. 
 
-***database***
-The data base consists of two parts for events and users. The users can be assigned ideally different roles. Mongodb is used as a data platform.
-
 ## User Stories
  **Signup**: can sign into the platform after admin's approval. 
 - **Login**: can login but also log out at the exit point
