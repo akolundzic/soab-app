@@ -1,6 +1,6 @@
 <%- include('partials/header'); -%>
 
-<form action="/auth/signup">
+<form action="/auth/signup" method="POST">
   <h2>Sign up</h2>
   <label for="name">Name</label>
   <input type="text" name="name" required />
@@ -24,6 +24,9 @@
   const form = document.querySelector("form");
   form.addEventListener("submit", (e) => {
     e.preventDefault();
+    const emailError = document.querySelector(".email.error");
+    const passwordError = document.querySelector(".password.error");
+
     // get values
     const email = form.email.value;
     const password = form.password.value;

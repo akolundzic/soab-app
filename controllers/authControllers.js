@@ -1,9 +1,18 @@
 //Initialize
 const { usersschema } = require("../models/users");
 let errors = { email: "", password: "" };
-
+const jwt = require("jsonwebtoken");
+let minute = 1000 * 60;
+let hour = minute * 60;
+let day = hour * 24;
+let jwtSecretKey = process.env.JWT_SECRET_KEY;
+const createToken = (id) => {
+  return jwt.sign({ id }, jwtSecretKey, {
+    expiresIn: day,
+  });
+};
+//stupid handler does not work !!!
 const handleErrors = (err) => {
-  // console.log("in catch statement " + err.code);
   //duplicate error code
   if (err.code === 11000) {
     errors.email = "This is a duplicate email address";
@@ -14,6 +23,7 @@ const handleErrors = (err) => {
       errors[properties.path] = properties.message;
     });
   }
+
   return errors;
 };
 
@@ -29,7 +39,8 @@ const getLogin = async (req, res) => {
 
 const postSignup = async (req, res) => {
   let now = new Date();
-  const { name, surname, date, email, password, image } = req.body;
+  const { name, surname, email, password, image } = req.body;
+
   try {
     await usersschema.findOne({ email: email }).then((user) => {
       if (user) {
@@ -44,7 +55,7 @@ const postSignup = async (req, res) => {
             date: now,
             image: image,
           })
-          .then((data) => res.status(201).json(data));
+          .then((data) => res.status(201).json(data._id));
       }
     });
   } catch (err) {
@@ -60,10 +71,17 @@ const postLogin = async (req, res) => {
     res.status(422).send("user not create");
   }
 };
+const setCookies = async (req, res) => {
+  const name = "newUser";
+  const value = true;
+  res.cookie(name, value, { maxAge: day, httpOnly: true });
+  res.status(200).send("Set cookies successfully");
+};
 
 module.exports = {
   getSingup: getSingup,
   getLogin: getLogin,
   postSignup: postSignup,
   postLogin: postLogin,
+  setCookies: setCookies,
 };
