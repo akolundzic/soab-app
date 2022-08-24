@@ -22,8 +22,8 @@ app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true })); //input from form ejs
 app.use(cookieParser());
 app.use(express.json());
-app.use("/home", posteventrouter);
-app.use("/home", eventsrouter);
+app.use("/", posteventrouter);
+app.use("/", eventsrouter);
 app.use("/auth", userroutes);
 
 //test connection status

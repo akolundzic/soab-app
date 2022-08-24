@@ -22,26 +22,15 @@
 
 <script>
   const form = document.querySelector("form");
-  // const axios = require("axios");
-  // const getdata = async (req, res) => {
-  //   try {
-  //     await axios("/auth/signup", {
-  //       method: "GET",
-  //       headers: { "Content-Type": "application/json" },
-  //     }).then((response) => {
-  //       res.status(201).json(response.data);
-  //       console.log(response);
-  //     });
-  //   } catch (error) {
-  //     res.status(404).send(error.message);
-  //   }
-  // };
+  const emailError = document.querySelector(".email.error");
+  const passwordError = document.querySelector(".password.error");
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const emailError = document.querySelector(".email.error");
     const passwordError = document.querySelector(".password.error");
-
+    emailError.textContent = "";
+    passwordError.textContent = "";
     // get values
     const email = form.email.value;
     const password = form.password.value;
@@ -55,7 +44,10 @@
         headers: { "Content-Type": "application/json" },
       });
       const data = await response.json();
-      console.log(data);
+      if (data.error) {
+        emailError.textContent = data.error.message;
+        passwordError.textContent = data.error.password;
+      }
       // await axios("/auth/signup", {
       //   method: "POST",
       //   headers: { "Content-Type": "application/json" },
@@ -70,10 +62,12 @@
       //     });
       //   console.log(response);
       // });
+      //----redirec, in React for example Router
+      if (data.error) {
+        location.assign("/home");
+      }
     } catch (error) {
       console.log(error.message);
     }
-
-    // getdata(req, res);
   });
 </script>

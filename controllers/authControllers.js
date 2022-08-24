@@ -3,17 +3,15 @@ const { usersschema } = require("../models/users");
 let errors = { email: "", password: "" };
 const jwt = require("jsonwebtoken");
 //cookie time
-let day = 60 * 60 * 24;
-const multi = 6;
-const expire = day * multi;
+const maxAge = 5 * 24 * 60 * 60;
 // const hour_timestamp = () => {
 //   return Math.floor(Date.now() / 1000 + hour);
 // };
 let jwtSecretKey = process.env.JWT_SECRET_KEY;
 
 const createToken = (id) => {
-  return jwt.sign({ id }, jwtSecretKey, {
-    expiresIn: expire,
+  return jwt.sign({ id }, "test", {
+    expiresIn: maxAge,
   });
 };
 const setCookies = async (req, res) => {
@@ -55,7 +53,7 @@ const postSignup = async (req, res) => {
   try {
     await usersschema.findOne({ email: email }).then(async (user) => {
       if (user) {
-        res.send("Useremail ${email} already exists");
+        res.send("Useremail  already exists");
       } else {
         const user = await usersschema.create({
           email: email,
@@ -65,19 +63,17 @@ const postSignup = async (req, res) => {
           date: now,
           image: image,
         });
+
         const token = createToken(user._id);
         res.cookie("user_cookie", token, {
-          httpOnly: true,
-          maxAge: expire_cookie,
+          httpOnly: false,
+          maxAge: maxAge * 1000,
         });
-        res.status(201).json(user._id);
-
-        // .then((data) => res.status(201).json({userid:data._id}));
+        res.status(201).json({ user_id: user._id });
       }
     });
   } catch (err) {
     const errors = handleErrors(err);
-    // console.log("errer Code is: " + err.code);
     res.status(404).json({ errors });
   }
 };
