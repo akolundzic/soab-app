@@ -55,7 +55,7 @@ const postSignup = async (req, res) => {
   try {
     await usersschema.findOne({ email: email }).then(async (user) => {
       if (user) {
-        res.send("Use Already Exists");
+        res.send("Useremail ${email} already exists");
       } else {
         const user = await usersschema.create({
           email: email,
@@ -65,11 +65,11 @@ const postSignup = async (req, res) => {
           date: now,
           image: image,
         });
-        // const token = createToken(user._id);
-        // res.cookie("user_cookie", token, {
-        //   httpOnly: true,
-        //   maxAge: expire_cookie,
-        // });
+        const token = createToken(user._id);
+        res.cookie("user_cookie", token, {
+          httpOnly: true,
+          maxAge: expire_cookie,
+        });
         res.status(201).json(user._id);
 
         // .then((data) => res.status(201).json({userid:data._id}));
