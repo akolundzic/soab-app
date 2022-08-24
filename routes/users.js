@@ -19,7 +19,6 @@ router.post("/login", async (req, res) => {
 });
 router.get("/signup", async (req, res) => {
   // await contr.getSingup(req, res);
-
   res.render("signup");
 });
 router.post("/signup/", async (req, res) => {

@@ -49,22 +49,29 @@
     const surname = form.surname.value;
     console.log("output of body :" + password, email);
     try {
-      await axios("/auth/signup", {
+      const response = await fetch("/auth/signup", {
         method: "POST",
+        body: JSON.stringify({ email, password, name, surname }),
         headers: { "Content-Type": "application/json" },
-      }).then((response) => {
-        res
-          .status(201)
-          .json({
-            email: email,
-            password: password,
-            name: name,
-            surname: surname,
-          });
-        console.log(response);
       });
+      const data = await response.json();
+      console.log(data);
+      // await axios("/auth/signup", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      // }).then((response) => {
+      //   res
+      //     .status(201)
+      //     .json({
+      //       email: email,
+      //       password: password,
+      //       name: name,
+      //       surname: surname,
+      //     });
+      //   console.log(response);
+      // });
     } catch (error) {
-      res.status(404).send(error.message);
+      console.log(error.message);
     }
 
     // getdata(req, res);
