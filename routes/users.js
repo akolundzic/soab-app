@@ -30,7 +30,7 @@ router.get("/set-cookies/", contr.setCookies);
 router.get("/get-cookies/", async (req, res) => {
   const cookies = req.cookies;
   try {
-    res.status(200).json(await cookies);
+    res.status(200).send(await cookies.newUser);
   } catch (e) {
     res.status(404).send("Cookie not found, undefined :${cookie}" + e.message);
   }

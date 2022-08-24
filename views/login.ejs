@@ -16,11 +16,11 @@
 
 <script>
   const form = document.querySelector("form");
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    // get values
+    // get valuues
     const email = form.email.value;
     const password = form.password.value;
-    console.log(email, password);
+    
   });
 </script>

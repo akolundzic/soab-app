@@ -1,6 +1,6 @@
 <%- include('partials/header'); -%>
 
-<form action="/auth/signup" method="POST">
+<form action="/auth/signup" method="GET">
   <h2>Sign up</h2>
   <label for="name">Name</label>
   <input type="text" name="name" required />
@@ -22,7 +22,22 @@
 
 <script>
   const form = document.querySelector("form");
-  form.addEventListener("submit", (e) => {
+  // const axios = require("axios");
+  // const getdata = async (req, res) => {
+  //   try {
+  //     await axios("/auth/signup", {
+  //       method: "GET",
+  //       headers: { "Content-Type": "application/json" },
+  //     }).then((response) => {
+  //       res.status(201).json(response.data);
+  //       console.log(response);
+  //     });
+  //   } catch (error) {
+  //     res.status(404).send(error.message);
+  //   }
+  // };
+
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const emailError = document.querySelector(".email.error");
     const passwordError = document.querySelector(".password.error");
@@ -30,6 +45,28 @@
     // get values
     const email = form.email.value;
     const password = form.password.value;
-    console.log(email, password);
+    const name = form.name.value;
+    const surname = form.surname.value;
+    console.log("output of body :" + password, email);
+    try {
+      await axios("/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      }).then((response) => {
+        res
+          .status(201)
+          .json({
+            email: email,
+            password: password,
+            name: name,
+            surname: surname,
+          });
+        console.log(response);
+      });
+    } catch (error) {
+      res.status(404).send(error.message);
+    }
+
+    // getdata(req, res);
   });
 </script>
