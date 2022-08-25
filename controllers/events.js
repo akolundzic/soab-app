@@ -3,6 +3,13 @@ const app = express();
 app.use(express.json());
 const mongoose = require("mongoose");
 const { eventsschema } = require("../models/events");
+const aggregationobject = {
+  venueName: "$venueName",
+  time: "$time",
+  location: "$location",
+  date: "$date",
+  event: "$event",
+};
 const errors = {
   time: "",
   date: "",
@@ -27,9 +34,8 @@ const getEvents = async function (req, res, filter) {
       .sort({ date: 1 })
       .then((dbModel) => res.json(dbModel));
   } catch (err) {
-    console.log(err.message);
-    res.status(404).send("No data found");
-    console.log(req.params);
+    const errors = handleErrors(err);
+    res.status(404).json({ errors: errors });
   }
 };
 
@@ -45,33 +51,51 @@ const postEvents = async (req, res) => {
     description,
   } = await req.body;
   try {
-    const obj = await eventsschema
-      .create({
-        date: date,
-        time: time,
-        city: city,
-        venueName: venueName,
-        address: {
-          street: address.street,
-          number: address.number,
-          district: address.district,
+    const identical = await eventsschema.aggregate([
+      {
+        $group: {
+          _id: {
+            venueName: "$venueName",
+            time: "$time",
+            location: "$location",
+            date: "$date",
+            event: "$event",
+          },
+          count: { $sum: 1 },
         },
-        eventName: eventName,
-        description: description,
-        //url string - later on multer
-        image: image,
-      })
-      .then((data) => {
-        //   console.log(handleErrors(err));
-        res.status(201).json(data);
+      },
+    ]);
+    if (identical[1].count > 0) {
+      console.log(identical[1].count);
+      return res.status(400).json({
+        errors: "Event already exists, please change specific details",
       });
-    // res.send(venueName);
-    // res.status(200).json(obj);
+    } else {
+      await eventsschema
+        .create({
+          date: date,
+          time: time,
+          city: city,
+          venueName: venueName,
+          address: {
+            street: address.street,
+            number: address.number,
+            district: address.district,
+          },
+          eventName: eventName,
+          description: description,
+          //url string - later on multer
+          image: image,
+        })
+        .then((data) => {
+          res.status(201).json(data);
+        });
+      //end else statement
+    }
+    //end try statement
   } catch (err) {
     const errors = handleErrors(err);
-
     res.json({ errors: errors });
-    // .sen
   }
 };
 const updateEvent = async function (req, res) {

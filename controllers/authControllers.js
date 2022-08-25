@@ -25,7 +25,7 @@ const setCookies = async (req, res) => {
   res.cookie(name, value, { maxAge: expire_cookie, httpOnly: false });
   res.status(200).send("Set cookies successfully" + jwtSecretKey);
 };
-//stupid handler does not work !!!
+
 const handleErrors = (err) => {
   //duplicate error code
   if (err.code === 11000) {
