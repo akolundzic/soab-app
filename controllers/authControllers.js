@@ -81,25 +81,25 @@ const postSignup = async (req, res) => {
 };
 const postLogin = async (req, res) => {
   const { email, password } = req.body;
-  // try {
-  const user = await usersschema.findOne({ email: email });
-  const passwordIsValid = bcrypt.compareSync(password, user.password);
-
-  //   res.status(401).json({ error: "Invalid password" });
-  // } else {
-  //   const token = createToken(user._id);
-  //   res.status(200).json({
-  //     id: user._id,
-  //     email: user.email,
-  //     accessToken: token,
-  //   });
-  // }
-  // });
-  console.log(user.password, password);
-  res.json(passwordIsValid);
-  // } catch (err) {
-  //   res.status(422).send("user does not exist", err);
-  // }
+  try {
+    await usersschema.findOne({ email: email }).exec((err, user) => {
+      const passwordIsValid = bcrypt.compareSync(password, user.password);
+      //if hashed password is ok,
+      //then server creates a jwt cookie to the browser client back
+      if (!passwordIsValid) {
+        res.status(401).json({ error: "Invalid password" });
+      } else {
+        const token = createToken(user._id);
+        res.status(200).json({
+          id: user._id,
+          email: user.email,
+          accessToken: token,
+        });
+      }
+    });
+  } catch (err) {
+    res.status(422).send("user does not exist", err);
+  }
 };
 
 module.exports = {
