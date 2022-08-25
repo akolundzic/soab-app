@@ -1,7 +1,9 @@
 //Initial
+const bcrypt = require("bcryptjs");
 const { usersschema } = require("../models/users");
 let errors = { email: "", password: "" };
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 //cookie time
 const maxAge = 5 * 24 * 60 * 60;
 // const hour_timestamp = () => {
@@ -10,17 +12,18 @@ const maxAge = 5 * 24 * 60 * 60;
 let jwtSecretKey = process.env.JWT_SECRET_KEY;
 
 const createToken = (id) => {
-  return jwt.sign({ id }, "test", {
+  return jwt.sign({ id }, jwtSecretKey, {
     expiresIn: maxAge,
   });
 };
-const setCookies = async (req, res) => {
-  const name = "newUser";
-  const value = true;
-  const expire_cookie = expire * 1000; //
 
-  res.cookie(name, value, { maxAge: expire_cookie, httpOnly: true });
-  res.status(200).send("Set cookies successfully");
+const setCookies = async (req, res) => {
+  const name = "user-cookie";
+  const value = true;
+  const expire_cookie = maxAge * 1000; //
+
+  res.cookie(name, value, { maxAge: expire_cookie, httpOnly: false });
+  res.status(200).send("Set cookies successfully" + jwtSecretKey);
 };
 //stupid handler does not work !!!
 const handleErrors = (err) => {
@@ -37,7 +40,6 @@ const handleErrors = (err) => {
   return errors;
 };
 
-// const bcrypt = require("bcryptjs");
 const multer = require("multer");
 
 const getSingup = async (req, res) => {
@@ -65,7 +67,7 @@ const postSignup = async (req, res) => {
         });
 
         const token = createToken(user._id);
-        res.cookie("user_cookie", token, {
+        res.cookie("usercookie", token, {
           httpOnly: false,
           maxAge: maxAge * 1000,
         });
@@ -78,11 +80,26 @@ const postSignup = async (req, res) => {
   }
 };
 const postLogin = async (req, res) => {
-  const { name, surname, date, email, password, image } = req.body;
-  try {
-  } catch (err) {
-    res.status(422).send("user not create");
-  }
+  const { email, password } = req.body;
+  // try {
+  const user = await usersschema.findOne({ email: email });
+  const passwordIsValid = bcrypt.compareSync(password, user.password);
+
+  //   res.status(401).json({ error: "Invalid password" });
+  // } else {
+  //   const token = createToken(user._id);
+  //   res.status(200).json({
+  //     id: user._id,
+  //     email: user.email,
+  //     accessToken: token,
+  //   });
+  // }
+  // });
+  console.log(user.password, password);
+  res.json(passwordIsValid);
+  // } catch (err) {
+  //   res.status(422).send("user does not exist", err);
+  // }
 };
 
 module.exports = {
