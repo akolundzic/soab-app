@@ -3,9 +3,21 @@ const app = express();
 app.use(express.json());
 const mongoose = require("mongoose");
 const { eventsschema } = require("../models/events");
+const errors = {
+  time: "",
+  date: "",
+  eventName: "",
+};
+// const moment = require("moment");
+// pm.globals.set("today", moment().format("MM/DD/YYYY"));
 //handle errors
 const handleErrors = (err) => {
-  return [err.message, err.code];
+  if (err.message.includes("events validation failed")) {
+    Object.values(err.errors).forEach(({ properties }) => {
+      errors[properties.path] = properties.message;
+    });
+  }
+  return errors;
 };
 
 const getEvents = async function (req, res, filter) {
@@ -33,7 +45,7 @@ const postEvents = async (req, res) => {
     description,
   } = await req.body;
   try {
-    await eventsschema
+    const obj = await eventsschema
       .create({
         date: date,
         time: time,
@@ -50,12 +62,16 @@ const postEvents = async (req, res) => {
         image: image,
       })
       .then((data) => {
-        console.log(handleErrors(err));
+        //   console.log(handleErrors(err));
         res.status(201).json(data);
       });
     // res.send(venueName);
+    // res.status(200).json(obj);
   } catch (err) {
-    res.status(422).send(err.message);
+    const errors = handleErrors(err);
+
+    res.json({ errors: errors });
+    // .sen
   }
 };
 const updateEvent = async function (req, res) {

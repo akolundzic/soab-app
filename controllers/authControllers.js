@@ -82,7 +82,8 @@ const postSignup = async (req, res) => {
 const postLogin = async (req, res) => {
   const { email, password } = req.body;
   try {
-    await usersschema.findOne({ email: email }).exec((err, user) => {
+    //exec
+    await usersschema.findOne({ email: email }).then((user) => {
       const passwordIsValid = bcrypt.compareSync(password, user.password);
       //if hashed password is ok,
       //then server creates a jwt cookie to the browser client back
@@ -98,7 +99,9 @@ const postLogin = async (req, res) => {
       }
     });
   } catch (err) {
-    res.status(422).send("user does not exist", err);
+    // res.status(422).send("user does not exist", err);
+    const errors = handleErrors(err);
+    res.status(404).json({ errors: "User does not exist" });
   }
 };
 
@@ -108,4 +111,5 @@ module.exports = {
   postSignup: postSignup,
   postLogin: postLogin,
   setCookies: setCookies,
+  // setsignout: setsignup,
 };
