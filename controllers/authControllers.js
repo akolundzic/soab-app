@@ -104,6 +104,30 @@ const postLogin = async (req, res) => {
     res.status(404).json({ errors: "User does not exist" });
   }
 };
+//authentification of user's token
+const getAuth = async (req, res, err) => {
+  try {
+    const token = req.body.token;
+    if (token) {
+      const decode = await jwt.verify(token, jwtSecretKey);
+      //response with decoded token
+      return await res.status(200).json({
+        login: true,
+        data: decode,
+      });
+    } else {
+      errors = handleErrors(err);
+      return res.status(404).json({ errors: "No Token provided" });
+    }
+  } catch (err) {
+    errors = handleErrors(err);
+    res.status(401).json({ errors: "Login failure" });
+  }
+};
+const postLogout = async function (req, res, next) {
+  res.clearCookie("jwt");
+  res.redirect("/");
+};
 
 module.exports = {
   getSingup: getSingup,
@@ -111,5 +135,6 @@ module.exports = {
   postSignup: postSignup,
   postLogin: postLogin,
   setCookies: setCookies,
-  // setsignout: setsignup,
+  getAuth: getAuth,
+  postLogout: postLogout,
 };

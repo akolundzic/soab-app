@@ -34,5 +34,9 @@ router.get("/get-cookies/", async (req, res) => {
     res.status(404).send("Cookie not found, undefined :${cookie}" + e.message);
   }
 });
+//user authentication
+router.get("/", async (req, res) => {
+  await contr.getAuth(req, res);
+});
 
 module.exports = router;
