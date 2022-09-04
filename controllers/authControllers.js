@@ -53,6 +53,7 @@ const postSignup = async (req, res) => {
   let now = new Date();
   const { name, surname, email, password, image } = req.body;
   try {
+    console.log(req.body);
     await usersschema.findOne({ email: email }).then(async (user) => {
       if (user) {
         res.send("Useremail  already exists");

@@ -14,6 +14,7 @@ mongoose.connect(process.env.PW_CONNECT);
 const db = mongoose.connection;
 // view engine
 app.set("view engine", "ejs");
+app.use(cors("*"));
 //----Middleware ----
 app.use(express.urlencoded({ extended: true })); //input from form ejs
 app.use(cookieParser());
