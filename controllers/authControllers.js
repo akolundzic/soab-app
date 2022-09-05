@@ -51,7 +51,7 @@ const getLogin = async (req, res) => {
 
 const postSignup = async (req, res) => {
   let now = new Date();
-  const { name, surname, email, password, image } = req.body;
+  const { name, surname, email, password, image, adress } = req.body;
   try {
     console.log(req.body);
     await usersschema.findOne({ email: email }).then(async (user) => {
@@ -65,6 +65,11 @@ const postSignup = async (req, res) => {
           password: password,
           date: now,
           image: image,
+          // address:{
+          //   "street":address.street,
+          //   "numbers":address.number,
+          //   "district":address.district,
+          // }
         });
 
         const token = createToken(user._id);

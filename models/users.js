@@ -20,6 +20,11 @@ const usersSchema = new Schema(
       required: [true, "Please enter a password"],
       minlength: [6, "Minum password length is 6 characters"],
     },
+    // address: {
+    //   street: { type: String, trim: true },
+    //   number: { type: Number },
+    //   district: { type: String, trim: true },
+    // },
     image: Buffer,
   },
 
