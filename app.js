@@ -33,10 +33,10 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 db.once("open", function () {
   console.log("MongoDB database connection established successfully");
 });
-// // view engine setup
-// app.set("views", path.join(__dirname, "views"));
-// // Set view engine as EJS
-// app.engine("html", require("ejs").renderFile);
+// view engine setup
+app.set("views", path.join(__dirname, "views"));
+// Set view engine as EJS
+app.engine("html", require("ejs").renderFile);
 
 app.get("/", function (req, res) {
   res.render("home");
@@ -44,15 +44,10 @@ app.get("/", function (req, res) {
 
 // error handler
 // /--- Server listeing -----
-let server = http.createServer(app);
-server.listen(PORT, function () {
+
+let server = app.listen(8000, function () {
   let host = server.address().address;
   let port = server.address().port;
   console.log("Server listening at http://%s:%s", host, port);
 });
-// let server = app.listen(8000, function () {
-//   let host = server.address().address;
-//   let port = server.address().port;
-//   console.log("Server listening at http://%s:%s", host, port);
-// });
 module.exports = app;
