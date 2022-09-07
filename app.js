@@ -5,6 +5,7 @@ const logger = require("morgan");
 const app = express();
 const PORT = process.env.PORT || 8000;
 const http = require("https");
+const { usersschema } = require("./models/users");
 
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -41,6 +42,8 @@ app.engine("html", require("ejs").renderFile);
 app.get("/", function (req, res) {
   res.render("home");
 });
+
+//test all users
 
 // error handler
 // /--- Server listeing -----

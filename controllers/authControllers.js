@@ -94,8 +94,10 @@ const postLogin = async (req, res) => {
       //if hashed password is ok,
       //then server creates a jwt cookie to the browser client back
       if (!passwordIsValid) {
+        console.log("Authentication unsuccessful: invalid password");
         res.status(401).json({ error: "Invalid password" });
       } else {
+        console.log("Authentication successful");
         const token = createToken(user._id);
         res.status(200).json({
           id: user._id,
@@ -135,6 +137,36 @@ const postLogout = async function (req, res, next) {
   res.redirect("/");
 };
 
+//find all users
+const getUsers = async function (req, res, filter) {
+  try {
+    await usersschema
+      .find(filter)
+      .sort({ date: 1 })
+      .then((response) => res.json(response));
+     
+  } catch (err) {
+    const errors = handleErrors(err);
+    res.status(404).json({ errors: errors });
+  }
+};
+//find one user with :id
+const getOneUser = async (req, res,id) =>{
+  try {
+    await usersschema
+    .findById({ _id: id })
+    // .then((data) => data.remove())
+    .then((data) => {
+      res.status(201).json(data);
+    });
+     
+  } catch (err) {
+    const errors = handleErrors(err);
+    res.status(422).json({ errors: errors });
+  }
+  
+}
+
 module.exports = {
   getSingup: getSingup,
   getLogin: getLogin,
@@ -143,4 +175,6 @@ module.exports = {
   setCookies: setCookies,
   getAuth: getAuth,
   postLogout: postLogout,
+  getUsers: getUsers,
+  getOneUser: getOneUser,
 };

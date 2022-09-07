@@ -9,6 +9,8 @@ app.use(express.json());
 
 const router = express.Router();
 const contr = require("../controllers/authControllers");
+const { usersschema } = require("../models/users");
+
 /* GET users listing. */
 
 router.get("/login", async (req, res) => {
@@ -24,6 +26,20 @@ router.get("/signup", async (req, res) => {
 router.post("/signup/", async (req, res) => {
   await contr.postSignup(req, res);
 });
+//get all users from the database
+router.get("/users", async (req, res) => {
+  await contr.getUsers(req, res,{});
+});
+//get one user from the database
+router.get("/users/:id", async (req, res) => {
+  const id = req.params.id;
+  await contr.getOneUser(req, res,id);
+});
+
+
+
+
+
 //--cookies user identifier
 router.get("/set-cookies/", contr.setCookies);
 router.get("/get-cookies/", async (req, res) => {
@@ -38,5 +54,6 @@ router.get("/get-cookies/", async (req, res) => {
 router.get("/", async (req, res) => {
   await contr.getAuth(req, res);
 });
+
 
 module.exports = router;
