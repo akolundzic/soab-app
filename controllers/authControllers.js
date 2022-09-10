@@ -109,14 +109,7 @@ const postLogin = async (req, res) => {
       const passwordIsValid = bcrypt.compareSync(password, user.password);
       //check if cookie exists eq. is defined
       const cookie = req.cookies.cookieName;
-      if (cookie === undefined) {
-        // no: set a new cookie
-        setCookies();
-        console.log("cookie created successfully");
-      } else {
-        // yes, cookie was already present
-        console.log("cookie exists", cookie);
-      }
+      console.log(cookie);
       //   next(); // <-- important!
       //if hashed password is ok,
       //then server creates a jwt cookie to the browser client back
@@ -125,6 +118,14 @@ const postLogin = async (req, res) => {
         res.status(401).json({ error: "Invalid password" });
       } else {
         console.log("Authentication successful");
+        if (cookie === undefined) {
+          // no: set a new cookie
+          setCookies();
+          console.log("cookie created successfully");
+        } else {
+          // yes, cookie was already present
+          console.log("cookie exists", cookie);
+        }
         const token = createToken(user._id);
         res.status(200).json({
           id: user._id,
