@@ -17,13 +17,29 @@ const createToken = (id) => {
   });
 };
 
-const setCookies = async (req, res) => {
+// var cookie = req.cookies.cookieName;
+// const cookie =req.cookies.cookieName;
+//   if (cookie === undefined) {
+//     // no: set a new cookie
+
+//     var randomNumber=Math.random().toString();
+//     randomNumber=randomNumber.substring(2,randomNumber.length);
+//     res.cookie('cookieName',randomNumber, { maxAge: 900000, httpOnly: true });
+//     console.log('cookie created successfully');
+//   } else {
+//     // yes, cookie was already present
+//     console.log('cookie exists', cookie);
+//   }
+//   next(); // <-- important!
+
+const setCookies = async (req, res, next) => {
   const name = "user-cookie";
   const value = true;
   const expire_cookie = maxAge * 1000; //
 
   res.cookie(name, value, { maxAge: expire_cookie, httpOnly: false });
   res.status(200).send("Set cookies successfully" + jwtSecretKey);
+  next();
 };
 
 const handleErrors = (err) => {
@@ -91,6 +107,17 @@ const postLogin = async (req, res) => {
     //exec
     await usersschema.findOne({ email: email }).then((user) => {
       const passwordIsValid = bcrypt.compareSync(password, user.password);
+      //check if cookie exists eq. is defined
+      const cookie = req.cookies.cookieName;
+      if (cookie === undefined) {
+        // no: set a new cookie
+        setCookies();
+        console.log("cookie created successfully");
+      } else {
+        // yes, cookie was already present
+        console.log("cookie exists", cookie);
+      }
+      //   next(); // <-- important!
       //if hashed password is ok,
       //then server creates a jwt cookie to the browser client back
       if (!passwordIsValid) {
@@ -144,28 +171,25 @@ const getUsers = async function (req, res, filter) {
       .find(filter)
       .sort({ date: 1 })
       .then((response) => res.json(response));
-     
   } catch (err) {
     const errors = handleErrors(err);
     res.status(404).json({ errors: errors });
   }
 };
 //find one user with :id
-const getOneUser = async (req, res,id) =>{
+const getOneUser = async (req, res, id) => {
   try {
     await usersschema
-    .findById({ _id: id })
-    // .then((data) => data.remove())
-    .then((data) => {
-      res.status(201).json(data);
-    });
-     
+      .findById({ _id: id })
+      // .then((data) => data.remove())
+      .then((data) => {
+        res.status(201).json(data);
+      });
   } catch (err) {
     const errors = handleErrors(err);
     res.status(422).json({ errors: errors });
   }
-  
-}
+};
 
 module.exports = {
   getSingup: getSingup,
