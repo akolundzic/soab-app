@@ -120,7 +120,7 @@ const postLogin = async (req, res) => {
         console.log("Authentication successful");
         if (cookie === undefined) {
           // no: set a new cookie
-          setCookies();
+          // setCookies();
           console.log("cookie created successfully");
         } else {
           // yes, cookie was already present
