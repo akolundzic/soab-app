@@ -18,6 +18,7 @@ router.get("/login", async (req, res) => {
 });
 router.post("/login", async (req, res) => {
   await contr.postLogin(req, res);
+  
 });
 router.get("/signup", async (req, res) => {
   await contr.getSingup(req, res);
@@ -38,14 +39,7 @@ router.get("/users/:id", async (req, res) => {
 
 //--cookies user identifier
 router.get("/set-cookies/", contr.setCookies);
-router.get("/get-cookies/", async (req, res) => {
-  const cookies = req.cookies;
-  try {
-    res.status(200).send(await cookies.newUser);
-  } catch (e) {
-    res.status(404).send("Cookie not found, undefined :${cookie}" + e.message);
-  }
-});
+router.get("/get-cookies/", contr.getCookies);
 //user authentication
 router.get("/", async (req, res) => {
   await contr.getAuth(req, res);

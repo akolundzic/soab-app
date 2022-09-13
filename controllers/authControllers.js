@@ -17,31 +17,31 @@ const createToken = (id) => {
   });
 };
 
-// var cookie = req.cookies.cookieName;
-// const cookie =req.cookies.cookieName;
-//   if (cookie === undefined) {
-//     // no: set a new cookie
-
-//     var randomNumber=Math.random().toString();
-//     randomNumber=randomNumber.substring(2,randomNumber.length);
-//     res.cookie('cookieName',randomNumber, { maxAge: 900000, httpOnly: true });
-//     console.log('cookie created successfully');
-//   } else {
-//     // yes, cookie was already present
-//     console.log('cookie exists', cookie);
-//   }
-//   next(); // <-- important!
+const tokensaveCookies = (res, token) => {
+  const name = "usercookie";
+  return res.cookie(name, token, {
+    httpOnly: false,
+    maxAge: maxAge * 1000,
+  });
+};
 
 const setCookies = async (req, res, next) => {
   const name = "user-cookie";
   const value = true;
   const expire_cookie = maxAge * 1000; //
-
-  res.cookie(name, value, { maxAge: expire_cookie, httpOnly: false });
+  await res.cookie(name, value, { maxAge: expire_cookie, httpOnly: false });
   res.status(200).send("Set cookies successfully" + jwtSecretKey);
-  next();
+  next;
 };
 
+const getCookies = async (req, res, next) => {
+  const cookies = req.cookies;
+  try {
+    res.status(200).send(cookies);
+  } catch (e) {
+    res.status(404).send("Cookie not found, undefined :${cookie}" + e.message);
+  }
+};
 const handleErrors = (err) => {
   //duplicate error code
   if (err.code === 11000) {
@@ -57,6 +57,7 @@ const handleErrors = (err) => {
 };
 
 const multer = require("multer");
+const { response } = require("express");
 
 const getSingup = async (req, res) => {
   res.render("signup");
@@ -101,33 +102,23 @@ const postSignup = async (req, res) => {
     res.status(404).json({ errors });
   }
 };
-const postLogin = async (req, res) => {
+const postLogin = async (req, res, next) => {
   const { email, password } = req.body;
+
   try {
     //exec
+
     await usersschema.findOne({ email: email }).then((user) => {
       const passwordIsValid = bcrypt.compareSync(password, user.password);
-      //check if cookie exists eq. is defined
       const cookie = req.cookies.cookieName;
-      console.log(cookie);
-      //   next(); // <-- important!
-      //if hashed password is ok,
-      //then server creates a jwt cookie to the browser client back
+      const expire_cookie = maxAge * 1000; //
+      const name = "usercookie";
+
       if (!passwordIsValid) {
-        console.log("Authentication unsuccessful: invalid password");
         res.status(401).json({ error: "Invalid password" });
       } else {
-        console.log("Authentication successful");
-        if (cookie === undefined) {
-          // no: set a new cookie
-          // setCookies();
-          console.log("cookie created successfully");
-        } else {
-          // yes, cookie was already present
-          console.log("cookie exists", cookie);
-        }
         const token = createToken(user._id);
-        res.status(200).json({
+        tokensaveCookies(res, token).status(200).json({
           id: user._id,
           email: user.email,
           accessToken: token,
@@ -135,7 +126,6 @@ const postLogin = async (req, res) => {
       }
     });
   } catch (err) {
-    // res.status(422).send("user does not exist", err);
     const errors = handleErrors(err);
     res.status(404).json({ errors: "User does not exist" });
   }
@@ -198,6 +188,7 @@ module.exports = {
   postSignup: postSignup,
   postLogin: postLogin,
   setCookies: setCookies,
+  getCookies: getCookies,
   getAuth: getAuth,
   postLogout: postLogout,
   getUsers: getUsers,
