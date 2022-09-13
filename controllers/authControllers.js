@@ -16,13 +16,15 @@ const createToken = (id) => {
     expiresIn: maxAge,
   });
 };
-
+//Save jwt Token in a Cookie 
 const tokensaveCookies = (res, token) => {
   const name = "usercookie";
+  console.log('in Cookie ');
   return res.cookie(name, token, {
     httpOnly: false,
     maxAge: maxAge * 1000,
   });
+  
 };
 
 const setCookies = async (req, res, next) => {
