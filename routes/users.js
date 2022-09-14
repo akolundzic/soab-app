@@ -1,4 +1,5 @@
 const express = require("express");
+const { deleteCookie } = require("../controllers/authControllers");
 const app = express();
 let minute = 1000 * 60;
 let hour = minute * 60;
@@ -13,11 +14,12 @@ const { usersschema } = require("../models/users");
 
 /* GET users listing. */
 
-router.get("/login", async (req, res) => {
-  await contr.getLogin(req, res);
-});
 router.post("/login", async (req, res) => {
   await contr.postLogin(req, res);
+});
+router.post("/logout", async (req, res,next) => {
+  await contr.getLogout(req, res);
+  
   
 });
 router.get("/signup", async (req, res) => {
@@ -29,12 +31,12 @@ router.post("/signup/", async (req, res) => {
 });
 //get all users from the database
 router.get("/users", async (req, res) => {
-  await contr.getUsers(req, res,{});
+  await contr.getUsers(req, res, {});
 });
 //get one user from the database
 router.get("/users/:id", async (req, res) => {
   const id = req.params.id;
-  await contr.getOneUser(req, res,id);
+  await contr.getOneUser(req, res, id);
 });
 
 //--cookies user identifier
@@ -44,6 +46,5 @@ router.get("/get-cookies/", contr.getCookies);
 router.get("/", async (req, res) => {
   await contr.getAuth(req, res);
 });
-
 
 module.exports = router;

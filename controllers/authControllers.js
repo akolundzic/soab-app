@@ -4,8 +4,10 @@ const { usersschema } = require("../models/users");
 let errors = { email: "", password: "" };
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+const http = require("http");
+const url = require("url");
 //cookie time
-const maxAge = 5 * 24 * 60 * 60;
+const maxAge = 24 * 60 * 60;
 // const hour_timestamp = () => {
 //   return Math.floor(Date.now() / 1000 + hour);
 // };
@@ -16,15 +18,15 @@ const createToken = (id) => {
     expiresIn: maxAge,
   });
 };
-//Save jwt Token in a Cookie 
-const tokensaveCookies = (res, token) => {
+//Save jwt Token in a Cookie
+const tokensaveCookies = (res, token, time) => {
   const name = "usercookie";
-  console.log('in Cookie ');
+
   return res.cookie(name, token, {
     httpOnly: false,
-    maxAge: maxAge * 1000,
+    maxAge: time,
+    path: "/",
   });
-  
 };
 
 const setCookies = async (req, res, next) => {
@@ -64,18 +66,15 @@ const { response } = require("express");
 const getSingup = async (req, res) => {
   res.render("signup");
 };
-const getLogin = async (req, res) => {
-  res.render("login");
-};
-
+// middleware functions for post get login, signup etc.
 const postSignup = async (req, res) => {
   let now = new Date();
+  const expire_cookie = maxAge * 1000;
   const { name, surname, email, password, image, adress } = req.body;
   try {
-    console.log(req.body);
     await usersschema.findOne({ email: email }).then(async (user) => {
       if (user) {
-        res.send("Useremail  already exists");
+        res.json({ message: "Useremail  already exists" });
       } else {
         const user = await usersschema.create({
           email: email,
@@ -92,11 +91,10 @@ const postSignup = async (req, res) => {
         });
 
         const token = createToken(user._id);
-        res.cookie("usercookie", token, {
-          httpOnly: false,
-          maxAge: maxAge * 1000,
-        });
-        res.status(201).json({ user_id: user._id });
+        res
+          .tokensaveCookies(res, token, expire_cookie)
+          .status(201)
+          .json({ user_id: user._id });
       }
     });
   } catch (err) {
@@ -104,23 +102,18 @@ const postSignup = async (req, res) => {
     res.status(404).json({ errors });
   }
 };
+//Login
 const postLogin = async (req, res, next) => {
   const { email, password } = req.body;
-
   try {
-    //exec
-
     await usersschema.findOne({ email: email }).then((user) => {
       const passwordIsValid = bcrypt.compareSync(password, user.password);
-      const cookie = req.cookies.cookieName;
       const expire_cookie = maxAge * 1000; //
-      const name = "usercookie";
-
       if (!passwordIsValid) {
         res.status(401).json({ error: "Invalid password" });
       } else {
         const token = createToken(user._id);
-        tokensaveCookies(res, token).status(200).json({
+        tokensaveCookies(res, token, expire_cookie).status(200).json({
           id: user._id,
           email: user.email,
           accessToken: token,
@@ -132,6 +125,18 @@ const postLogin = async (req, res, next) => {
     res.status(404).json({ errors: "User does not exist" });
   }
 };
+//get logout
+const getLogout = async (req, res, path) => {
+  //remove token value
+  [key, value] = Object.entries(req.cookies);
+  try {
+    await res.clearCookie(`${key[0]}`, { path: "/" }).status(200).json({ message: "Successfully logged out" });
+  } catch (err) {
+    errors = handleErrors(err);
+    await res.status(401).json({ errors: "Logout Failed" });
+  }
+};
+
 //authentification of user's token
 const getAuth = async (req, res, err) => {
   try {
@@ -185,10 +190,10 @@ const getOneUser = async (req, res, id) => {
 };
 
 module.exports = {
-  getSingup: getSingup,
-  getLogin: getLogin,
+
   postSignup: postSignup,
   postLogin: postLogin,
+  getLogout: getLogout,
   setCookies: setCookies,
   getCookies: getCookies,
   getAuth: getAuth,
