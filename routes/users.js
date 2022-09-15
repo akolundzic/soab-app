@@ -1,5 +1,5 @@
 const express = require("express");
-const { deleteCookie } = require("../controllers/authControllers");
+const { verifyToken } = require("../middleware/authmiddleware");
 const app = express();
 let minute = 1000 * 60;
 let hour = minute * 60;
@@ -10,17 +10,16 @@ app.use(express.json());
 
 const router = express.Router();
 const contr = require("../controllers/authControllers");
-const { usersschema } = require("../models/users");
+
 
 /* GET users listing. */
 
 router.post("/login", async (req, res) => {
+  
   await contr.postLogin(req, res);
 });
-router.post("/logout", async (req, res,next) => {
+router.get("/logout", async (req, res, next) => {
   await contr.getLogout(req, res);
-  
-  
 });
 router.get("/signup", async (req, res) => {
   await contr.getSingup(req, res);
@@ -30,7 +29,7 @@ router.post("/signup/", async (req, res) => {
   await contr.postSignup(req, res);
 });
 //get all users from the database
-router.get("/users", async (req, res) => {
+router.get("/users",  async (req, res) => {
   await contr.getUsers(req, res, {});
 });
 //get one user from the database

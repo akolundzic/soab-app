@@ -6,6 +6,8 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const http = require("http");
 const url = require("url");
+const multer = require("multer");
+const { response } = require("express");
 //cookie time
 const maxAge = 24 * 60 * 60;
 // const hour_timestamp = () => {
@@ -21,7 +23,6 @@ const createToken = (id) => {
 //Save jwt Token in a Cookie
 const tokensaveCookies = (res, token, time) => {
   const name = "usercookie";
-
   return res.cookie(name, token, {
     httpOnly: false,
     maxAge: time,
@@ -60,9 +61,6 @@ const handleErrors = (err) => {
   return errors;
 };
 
-const multer = require("multer");
-const { response } = require("express");
-
 const getSingup = async (req, res) => {
   res.render("signup");
 };
@@ -94,7 +92,7 @@ const postSignup = async (req, res) => {
         res
           .tokensaveCookies(res, token, expire_cookie)
           .status(201)
-          .json({ user_id: user._id });
+          .json({ user_id: user._id, accessToken: token });
       }
     });
   } catch (err) {
@@ -128,38 +126,17 @@ const postLogin = async (req, res, next) => {
 //get logout
 const getLogout = async (req, res, path) => {
   //remove token value
-  [key, value] = Object.entries(req.cookies);
+  key = Object.keys(req.cookies);
+
   try {
-    await res.clearCookie(`${key[0]}`, { path: "/" }).status(200).json({ message: "Successfully logged out" });
+    await res
+      .clearCookie(`${key[0]}`, { path: "/" })
+      .status(200)
+      .json({ message: "Successfully logged out" });
   } catch (err) {
     errors = handleErrors(err);
     await res.status(401).json({ errors: "Logout Failed" });
   }
-};
-
-//authentification of user's token
-const getAuth = async (req, res, err) => {
-  try {
-    const token = req.body.token;
-    if (token) {
-      const decode = await jwt.verify(token, jwtSecretKey);
-      //response with decoded token
-      return await res.status(200).json({
-        login: true,
-        data: decode,
-      });
-    } else {
-      errors = handleErrors(err);
-      return res.status(404).json({ errors: "No Token provided" });
-    }
-  } catch (err) {
-    errors = handleErrors(err);
-    res.status(401).json({ errors: "Login failure" });
-  }
-};
-const postLogout = async function (req, res, next) {
-  res.clearCookie("jwt");
-  res.redirect("/");
 };
 
 //find all users
@@ -190,14 +167,11 @@ const getOneUser = async (req, res, id) => {
 };
 
 module.exports = {
-
   postSignup: postSignup,
   postLogin: postLogin,
   getLogout: getLogout,
   setCookies: setCookies,
   getCookies: getCookies,
-  getAuth: getAuth,
-  postLogout: postLogout,
   getUsers: getUsers,
   getOneUser: getOneUser,
 };

@@ -4,10 +4,11 @@ app.use(express.json());
 
 const router = express.Router();
 const controller = require("../controllers/events");
+const { verifyToken } = require("../middleware/authmiddleware");
 // router.get("/:events", controller.getEvents);
 
-router.post("/events", controller.postEvents);
-router.get("/events", async (req, res) => {
+router.post("/events", verifyToken, controller.postEvents);
+router.get("/events", verifyToken, async (req, res) => {
   controller.getEvents(req, res);
 });
 router.get("/events/:district", async (req, res) => {
