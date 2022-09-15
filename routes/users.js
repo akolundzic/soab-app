@@ -38,9 +38,6 @@ router.get("/users/:id", async (req, res) => {
   await contr.getOneUser(req, res, id);
 });
 
-//--cookies user identifier
-router.get("/set-cookies/", contr.setCookies);
-router.get("/get-cookies/", contr.getCookies);
 //user authentication
 router.get("/", async (req, res) => {
   await contr.getAuth(req, res);

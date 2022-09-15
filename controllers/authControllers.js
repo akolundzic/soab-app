@@ -30,23 +30,6 @@ const tokensaveCookies = (res, token, time) => {
   });
 };
 
-const setCookies = async (req, res, next) => {
-  const name = "user-cookie";
-  const value = true;
-  const expire_cookie = maxAge * 1000; //
-  await res.cookie(name, value, { maxAge: expire_cookie, httpOnly: false });
-  res.status(200).send("Set cookies successfully" + jwtSecretKey);
-  next;
-};
-
-const getCookies = async (req, res, next) => {
-  const cookies = req.cookies;
-  try {
-    res.status(200).send(cookies);
-  } catch (e) {
-    res.status(404).send("Cookie not found, undefined :${cookie}" + e.message);
-  }
-};
 const handleErrors = (err) => {
   //duplicate error code
   if (err.code === 11000) {
@@ -103,6 +86,7 @@ const postSignup = async (req, res) => {
 //Login
 const postLogin = async (req, res, next) => {
   const { email, password } = req.body;
+  
   try {
     await usersschema.findOne({ email: email }).then((user) => {
       const passwordIsValid = bcrypt.compareSync(password, user.password);
@@ -124,10 +108,10 @@ const postLogin = async (req, res, next) => {
   }
 };
 //get logout
-const getLogout = async (req, res, path) => {
+const getLogout = async (req, res) => {
   //remove token value
   key = Object.keys(req.cookies);
-
+  
   try {
     await res
       .clearCookie(`${key[0]}`, { path: "/" })
@@ -170,8 +154,6 @@ module.exports = {
   postSignup: postSignup,
   postLogin: postLogin,
   getLogout: getLogout,
-  setCookies: setCookies,
-  getCookies: getCookies,
   getUsers: getUsers,
   getOneUser: getOneUser,
 };
