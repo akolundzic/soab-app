@@ -9,6 +9,7 @@ const cors = require("cors");
 const eventsrouter = require("./routes/events");
 const userroutes = require("./routes/users");
 require("dotenv").config();
+
 //connection to database
 
 mongoose.connect(process.env.PW_CONNECT);
