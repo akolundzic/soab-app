@@ -25,6 +25,9 @@ const usersSchema = new Schema(
     //   number: { type: Number },
     //   district: { type: String, trim: true },
     // },
+    token:{
+      type:String
+  },
     image: Buffer,
   },
 

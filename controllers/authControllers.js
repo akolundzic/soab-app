@@ -4,10 +4,11 @@ const { usersschema } = require("../models/users");
 let errors = { email: "", password: "" };
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const http = require("http");
-const url = require("url");
-const multer = require("multer");
-const { response } = require("express");
+const { handleErrors } = require("../middleware/authmiddleware");
+// const http = require("http");
+// const url = require("url");
+// const multer = require("multer");
+// const { response } = require("express");
 //cookie time
 const maxAge = 24 * 60 * 60;
 // const hour_timestamp = () => {
@@ -30,19 +31,19 @@ const tokensaveCookies = (res, token, time) => {
   });
 };
 
-const handleErrors = (err) => {
-  //duplicate error code
-  if (err.code === 11000) {
-    errors.email = "This is a duplicate email address";
-    return errors;
-  }
-  if (err.message.includes("users validation failed")) {
-    Object.values(err.errors).forEach(({ properties }) => {
-      errors[properties.path] = properties.message;
-    });
-  }
-  return errors;
-};
+// const handleErrors = (err) => {
+//   //duplicate error code
+//   if (err.code === 11000) {
+//     errors.email = "This is a duplicate email address";
+//     return errors;
+//   }
+//   if (err.message.includes("users validation failed")) {
+//     Object.values(err.errors).forEach(({ properties }) => {
+//       errors[properties.path] = properties.message;
+//     });
+//   }
+//   return errors;
+// };
 
 const getSingup = async (req, res) => {
   res.render("signup");
@@ -86,7 +87,7 @@ const postSignup = async (req, res) => {
 //Login
 const postLogin = async (req, res, next) => {
   const { email, password } = req.body;
-  
+
   try {
     await usersschema.findOne({ email: email }).then((user) => {
       const passwordIsValid = bcrypt.compareSync(password, user.password);
@@ -111,7 +112,7 @@ const postLogin = async (req, res, next) => {
 const getLogout = async (req, res) => {
   //remove token value
   key = Object.keys(req.cookies);
-  
+
   try {
     await res
       .clearCookie(`${key[0]}`, { path: "/" })

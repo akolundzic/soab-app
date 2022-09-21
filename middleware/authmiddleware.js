@@ -3,29 +3,42 @@ const jwt = require("jsonwebtoken");
 let jwtSecretKey = process.env.JWT_SECRET_KEY;
 const { usersschema } = require("../models/users");
 
+const errors = {
+  login: false,
+  message: "No access rights",
+  redirect_path: "/auth/login",
+};
+
+const handleErrors = (err) => {
+  //duplicate error code
+  if (err.code === 11000) {
+    errors.email = "This is a duplicate email address";
+    return errors;
+  }
+  if (err.message.includes("users validation failed")) {
+    Object.values(err.errors).forEach(({ properties }) => {
+      errors[properties.path] = properties.message;
+    });
+  }
+  return errors;
+};
+
 //authentification of user's token
 const verifyToken = async (req, res, err, next) => {
   values = Object.values(req.cookies);
   token = values[0];
+
   if (token) {
-    jwt.verify(token, jwtSecretKey, (err, decodedToken) => {
+    await jwt.verify(token, jwtSecretKey, (err, decodedToken) => {
       if (err) {
-        res.statu(404).json({
-          login: false,
-          message: "No access rights",
-          redirect_path: "/auth/login",
-        });
+        res.statu(404).json(errors);
       } else {
         next();
       }
     });
   } else {
-    res.statu(404).json({
-      login: false,
-      message: "No access rights",
-      redirect_path: "/auth/login",
-    });
-    console.log("no token found");
+    errors["message"] = "No valide token found";
+    res.statu(404).json(errors);
   }
 
   // try {
@@ -52,32 +65,23 @@ const checkUser = async (req, res, next) => {
   if (token) {
     jwt.verify(token, jwtSecretKey, async (err, decodedToken) => {
       if (err) {
-        res.statu(404).json({
-          login: false,
-          message: "No access rights",
-          redirect_path: "/auth/login",
-        });
+        res.statu(404).json(errors);
       } else {
-        let user = await usersschema.findById(decodedToken.id);
-        next();
+        req.user = await usersschema.findById(decodedToken.id);
+        return next();
       }
     });
   } else {
-    res.statu(404).json({
-      login: false,
-      message: "No access rights",
-      redirect_path: "/auth/login",
-    });
-    console.log("no token found");
+    errors["message"] = "No valide token found";
+    res.status(404).json(errors);
   }
 };
 
 module.exports = {
   verifyToken: verifyToken,
   checkUser: checkUser,
+  handleErrors: handleErrors,
 };
-
-
 
 // const checkRootLogin = async (req, res, next) => {
 //   try {
