@@ -3,12 +3,12 @@ const jwt = require("jsonwebtoken");
 let jwtSecretKey = process.env.JWT_SECRET_KEY;
 const { usersschema } = require("../models/users");
 
-const errors = {
-  login: false,
-  message: "No access rights",
-  redirect_path: "/auth/login",
-};
-
+// const errors = {
+//   login: false,
+//   message: "No access rights",
+//   redirect_path: "/auth/login",
+// };
+const errors = {};
 const handleErrors = (err) => {
   //duplicate error code
   if (err.code === 11000) {
@@ -22,23 +22,39 @@ const handleErrors = (err) => {
   }
   return errors;
 };
+// get key value pair from req.body
 
+const getNested = (obj, ...args)=>{
+  return obj.reduce((obj, key) => obj && obj[key], obj)
+};
+//update user content
+const getUpdatuser =(data,bodyojb)=>{
+  Object.keys(data).forEach((k) => {
+    for (const [keybody, valuebody] of Object.entries(bodyojb)) {
+      if (data[k][`${keybody}`]){
+        data[k][`${keybody}`]=valuebody;
+      }
+    }
+  });
+    return data;
+};
 //authentification of user's token
 const verifyToken = async (req, res, err, next) => {
   values = Object.values(req.cookies);
   token = values[0];
-
+  console.log(token);
   if (token) {
     await jwt.verify(token, jwtSecretKey, (err, decodedToken) => {
       if (err) {
+        errors = handleErrors(err);
         res.statu(404).json(errors);
       } else {
         next();
       }
     });
   } else {
-    errors["message"] = "No valide token found";
-    res.statu(404).json(errors);
+    // errors["message"] = "No valide token found";
+    res.statu(404).json({errors:"No valide token found"});
   }
 
   // try {
@@ -81,6 +97,8 @@ module.exports = {
   verifyToken: verifyToken,
   checkUser: checkUser,
   handleErrors: handleErrors,
+  getNested: getNested,
+  getUpdatuser: getUpdatuser
 };
 
 // const checkRootLogin = async (req, res, next) => {

@@ -6,7 +6,7 @@ const router = express.Router();
 const controller = require("../controllers/events");
 const { verifyToken } = require("../middleware/authmiddleware");
 // router.get("/:events", controller.getEvents);
-router.get("*",checkUser);
+// router.get("*",checkUser);
 router.post("/events", verifyToken, controller.postEvents);
 router.get("/events", verifyToken, async (req, res) => {
   controller.getEvents(req, res);

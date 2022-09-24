@@ -33,14 +33,17 @@ const usersSchema = new Schema(
 
   { collection: "users" }
 );
-usersSchema.post("save", function (doc, next) {
-  next();
-});
+
 usersSchema.pre("save", async function (next) {
   const salt = await bcrypt.genSalt();
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });
+// usersSchema.post("save", async function (next) {
+//   const salt = await bcrypt.genSalt();
+//   this.password = await bcrypt.hash(this.password, salt);
+//   next();
+// });
 //fire a functin when ever new document is save to database
 const usersschema = mongoose.model("users", usersSchema);
 module.exports = { usersschema };

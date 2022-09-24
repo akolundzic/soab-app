@@ -7,15 +7,11 @@ let day = hour * 24;
 
 //--middleware------
 app.use(express.json());
-
 const router = express.Router();
 const contr = require("../controllers/authControllers");
-
-
+process.on('warning', e => console.warn(e.stack));
 /* GET users listing. */
-
-router.post("/login",verifyToken , async (req, res) => {
-  
+router.post("/login", verifyToken, async (req, res) => {
   await contr.postLogin(req, res);
 });
 router.get("/logout", async (req, res, next) => {
@@ -26,21 +22,27 @@ router.get("/logout", async (req, res, next) => {
 //   // res.render("signup");
 // });
 router.post("/signup/", async (req, res) => {
-  await contr.postSignup(req, res);
+  await contr.postSignup(req, res );
 });
 //get all users from the database
-router.get("/users",  checkUser,async (req, res) => {
+router.get("/users", async (req, res) => {
   await contr.getUsers(req, res, {});
 });
-//get one user from the database - profile in react 
+//get one user from the database - profile in react
 router.get("/users/:id",checkUser, async (req, res) => {
   const id = req.params.id;
   await contr.getOneUser(req, res, id);
 });
 
-//user authentication
-router.get("/", async (req, res) => {
-  await contr.getAuth(req, res);
+//update user
+router.put("/users/:id", async (req, res) => {
+  const id = req.params.id;
+  await contr.updateUser(req, res);
 });
+
+//user authentication
+// router.get("/", async (req, res) => {
+//   await contr.getAuth(req, res);
+// });
 
 module.exports = router;
