@@ -1,5 +1,7 @@
 const express = require("express");
 const { verifyToken, checkUser } = require("../middleware/authmiddleware");
+const { usersschema } = require("../models/users");
+const mongoose = require('mongoose');
 const app = express();
 let minute = 1000 * 60;
 let hour = minute * 60;
@@ -29,14 +31,18 @@ router.get("/users", async (req, res) => {
   await contr.getUsers(req, res, {});
 });
 //get one user from the database - profile in react
-router.get("/users/:id",checkUser, async (req, res) => {
-  const id = req.params.id;
+router.get("/users/:id", async (req, res) => {
+  
+  const id = mongoose.Types.ObjectId(req.params.id.trim());
   await contr.getOneUser(req, res, id);
+  
+ 
+  // await contr.getOneUser(req, res, id);
 });
 
 //update user
 router.put("/users/:id", async (req, res) => {
-  const id = req.params.id;
+
   await contr.updateUser(req, res);
 });
 

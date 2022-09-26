@@ -5,6 +5,7 @@ let errors = { email: "", password: "" };
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const { handleErrors } = require("../middleware/authmiddleware");
+const { restart } = require("nodemon");
 
 // const { response } = require("../app");
 // const http = require("http");
@@ -125,21 +126,59 @@ const getUsers = async function (req, res, filter) {
 };
 //find one user with :id
 const getOneUser = async (req, res, id) => {
+
   try {
     await usersschema
-      .findById({ _id: id })
-      // .then((data) => data.remove())
-      .then((data) => {
-        res.status(201).json(data);
-      });
+      .findById(`${id}`)
+      .exec()
+      .then((response) => {
+        if(response){
+          res.status(200).json(response);
+        }
+        else{
+          res.status(500).json({ errors: "You are not in the database, please sign up" });
+        }
+     
+  });
   } catch (err) {
-    const errors = handleErrors(err);
-    res.status(422).json({ errors: errors });
+    res.status(500).json({ errors: err.message });
   }
+
+  // assert.ok(!(promise instanceof Promise));
+  // promise
+  //   .then((response) => res.json(response))
+  //   .catch((err) => res.status(500).json({ err: err.message }));
+  // await usersschema.findById(`${id}`).then((data) => {
+  //   console.log(data);
+  //   if (data) {
+  //     res.status(200).json({ message: data });
+  //   } else {
+
+  //     res.status(404).json({ message: "No such user" });
+  //   }
+
+  // }).catch((err) => {
+
+  //   errors = handleErrors(err);
+
+  //   res.status(500).json({errors: err.message});
+  // });
+
+  // try {
+  //   await usersschema
+  //     .findById({ _id: id })
+  //     // .then((data) => data.remove())
+  //     .then((data) => {
+  //       res.status(201).json(data);
+  //     });
+  // } catch (err) {
+  //   const errors = handleErrors(err);
+  //   res.status(422).json({ errors: errors });
+  // }
 };
 //update user
 const updateUser = async function (req, res) {
-  message ="";
+  message = "";
   try {
     const bodyobj = req.body;
     const data = await usersschema.findOneAndUpdate(
@@ -151,9 +190,9 @@ const updateUser = async function (req, res) {
         if (data[k][`${keybody}`]) {
           data[k][`${keybody}`] = valuebody;
           data.save();
-          message = {message:'Successfully Saved '+`${keybody}`};
+          message = { message: "Successfully Saved " + `${keybody}` };
         } else {
-          message = {message:'Was not able to save data'};
+          message = { message: "Was not able to save data" };
         }
       }
     });

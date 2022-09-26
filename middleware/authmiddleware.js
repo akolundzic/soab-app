@@ -81,7 +81,7 @@ const checkUser = async (req, res, next) => {
   if (token) {
     jwt.verify(token, jwtSecretKey, async (err, decodedToken) => {
       if (err) {
-        res.statu(404).json(errors);
+        res.status(404).json(errors);
       } else {
         req.user = await usersschema.findById(decodedToken.id);
         return next();
