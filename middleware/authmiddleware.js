@@ -40,11 +40,9 @@ const getUpdatuser =(data,bodyojb)=>{
 };
 //authentification of user's token
 const verifyToken = async (req, res, err, next) => {
-  values = Object.values(req.cookies);
-  token = values[0];
-  console.log(token);
+  token = req.cookies.usercookie;
   if (token) {
-    await jwt.verify(token, jwtSecretKey, (err, decodedToken) => {
+    await jwt.verify(token, process.env.JWT_SECRET_KEY, (err) => {
       if (err) {
         errors = handleErrors(err);
         res.statu(404).json(errors);
@@ -53,34 +51,18 @@ const verifyToken = async (req, res, err, next) => {
       }
     });
   } else {
-    // errors["message"] = "No valide token found";
-    res.statu(404).json({errors:"No valide token found"});
+    errors["message"] = "No valid token found";
+    res.statu(404).json(errors);
   }
-
-  // try {
-  //   if (token) {
-  //     const decode = await jwt.verify(token, jwtSecretKey);
-  //     //response with decoded token
-  //     // res.status(200).json({
-  //     //   login: true,
-  //     //   data: decode,
-  //     // });
-  //     return next();
-  //   } else {
-  //     errors = handleErrors(err);
-  //    res.status(404).json({errors:"no token provided", redirect_path: "/auth/login"});
-  //   }
-  // } catch (err) {
-  //   errors = handleErrors(err);
-  //   res.status(404).json({ errors: "You are not authorised to login" , redirect_path: "/auth/login"});
-  // }
+  
 };
 const checkUser = async (req, res, next) => {
-  values = Object.values(req.cookies);
-  token = values[0];
+  token = req.cookies.usercookie;
+  
   if (token) {
-    jwt.verify(token, jwtSecretKey, async (err, decodedToken) => {
+    jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, decodedToken) => {
       if (err) {
+        errors["message"] = "Token is not valid.";
         res.status(404).json(errors);
       } else {
         req.user = await usersschema.findById(decodedToken.id);
@@ -88,7 +70,7 @@ const checkUser = async (req, res, next) => {
       }
     });
   } else {
-    errors["message"] = "No valide token found";
+    errors["message"] = "No user date found.";
     res.status(404).json(errors);
   }
 };
