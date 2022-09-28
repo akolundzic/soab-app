@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const { handleErrors } = require("../middleware/authmiddleware");
 const { restart } = require("nodemon");
+const mongoose = require("mongoose");
 
 // const { response } = require("../app");
 // const http = require("http");
@@ -19,6 +20,10 @@ const expire_cookie = maxAge * 1000;
 //   return Math.floor(Date.now() / 1000 + hour);
 // };
 let jwtSecretKey = process.env.JWT_SECRET_KEY;
+const message = {
+  login: false,
+  message: "",
+};
 
 const createToken = (id) => {
   return jwt.sign({ id }, jwtSecretKey, {
@@ -46,7 +51,8 @@ const postSignup = async (req, res) => {
     const exist = await usersschema.findOne({ email: email });
     // await usersschema.findOne({ email: email }).then(async (user) => {
     if (exist) {
-      res.json({ message: "Useremail  already exists" });
+      message["message"] = "Useremail  already exists, please login";
+      res.json(message);
     } else {
       const user = await usersschema.create({
         email: email,
@@ -64,7 +70,7 @@ const postSignup = async (req, res) => {
       const token = createToken(user._id);
       tokensaveCookies(res, token)
         .status(201)
-        .json({ user_id: user._id, accessToken: token });
+        .json({ login: true, user_id: user._id, accessToken: token });
       //  //else statemen
     }
   } catch (err) {
@@ -81,11 +87,14 @@ const postLogin = async (req, res, next) => {
       const passwordIsValid = bcrypt.compareSync(password, user.password);
       const expire_cookie = maxAge * 1000; //
       // res.json(passwordIsValid);
+
       if (!passwordIsValid) {
-        res.status(401).json({ error: "Invalid password" });
+        message["message"] = "Password is not valid";
+        res.status(401).json(message);
       } else {
         const token = createToken(user._id);
         tokensaveCookies(res, token, expire_cookie).status(200).json({
+          login: true,
           id: user._id,
           email: user.email,
           accessToken: token,
@@ -93,7 +102,8 @@ const postLogin = async (req, res, next) => {
       }
     });
   } catch (err) {
-    res.status(404).json({ errors: "User does not exist" });
+    message["message"] = "User does not exist";
+    res.status(404).json(message);
   }
 };
 //get logout
@@ -108,7 +118,7 @@ const getLogout = async (req, res) => {
       .json({ message: "Successfully logged out" });
   } catch (err) {
     errors = handleErrors(err);
-    await res.status(401).json({ errors: "Logout Failed" });
+    await res.status(401).json(errors);
   }
 };
 
@@ -121,64 +131,31 @@ const getUsers = async function (req, res, filter) {
       .then((response) => res.json(response));
   } catch (err) {
     const errors = handleErrors(err);
-    res.status(404).json({ errors: errors });
+    res.status(404).json(errors);
   }
 };
 //find one user with :id
 const getOneUser = async (req, res, id) => {
-
+  
   try {
     await usersschema
       .findById(`${id}`)
       .exec()
       .then((response) => {
-        if(response){
+        if (response) {
           res.status(200).json(response);
+        } else {
+          message["message"] = "You are not in the database, please sign up";
+          res.status(500).json(message);
         }
-        else{
-          res.status(500).json({ errors: "You are not in the database, please sign up" });
-        }
-     
-  });
+      });
   } catch (err) {
-    res.status(500).json({ errors: err.message });
+    res.status(500).json({login: false, errors:err});
   }
-
-  // assert.ok(!(promise instanceof Promise));
-  // promise
-  //   .then((response) => res.json(response))
-  //   .catch((err) => res.status(500).json({ err: err.message }));
-  // await usersschema.findById(`${id}`).then((data) => {
-  //   console.log(data);
-  //   if (data) {
-  //     res.status(200).json({ message: data });
-  //   } else {
-
-  //     res.status(404).json({ message: "No such user" });
-  //   }
-
-  // }).catch((err) => {
-
-  //   errors = handleErrors(err);
-
-  //   res.status(500).json({errors: err.message});
-  // });
-
-  // try {
-  //   await usersschema
-  //     .findById({ _id: id })
-  //     // .then((data) => data.remove())
-  //     .then((data) => {
-  //       res.status(201).json(data);
-  //     });
-  // } catch (err) {
-  //   const errors = handleErrors(err);
-  //   res.status(422).json({ errors: errors });
-  // }
 };
 //update user
 const updateUser = async function (req, res) {
-  message = "";
+ 
   try {
     const bodyobj = req.body;
     const data = await usersschema.findOneAndUpdate(
@@ -190,9 +167,11 @@ const updateUser = async function (req, res) {
         if (data[k][`${keybody}`]) {
           data[k][`${keybody}`] = valuebody;
           data.save();
-          message = { message: "Successfully Saved " + `${keybody}` };
+          message["message"] = "Successfully Saved " + `${keybody}` ,
+          message['login']=true;
         } else {
-          message = { message: "Was not able to save data" };
+          message["message"] ="Was not able to save data" ,
+          message['login']=false;
         }
       }
     });
@@ -200,8 +179,7 @@ const updateUser = async function (req, res) {
     //--------------------------------------------
     //end of try statement
   } catch (err) {
-    const errors = handleErrors(err);
-    res.status(422).json({ errors });
+    res.status(422).json({login:false, errors:err});
   }
 };
 
