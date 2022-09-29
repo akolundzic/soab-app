@@ -31,7 +31,7 @@ router.get("/users", async (req, res) => {
   await contr.getUsers(req, res, {});
 });
 //get one user from the database - profile in react
-router.get("/users/:id", checkUser, async (req, res) => {
+router.get("/users/:id",  async (req, res) => {
   const id = req.params.id;
   await contr.getOneUser(req, res, id);
   // await contr.getOneUser(req, res, id);
