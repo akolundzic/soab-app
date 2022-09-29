@@ -21,14 +21,13 @@ app.use(cors("*"));
 app.use(express.urlencoded({ extended: true })); //input from form ejs
 app.use(cookieParser());
 app.use(express.json());
-app.use("/", eventsrouter);
-app.use("/auth", userroutes);
+// app.use("/", eventsrouter);
+// app.use("/auth", userroutes);
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-
 
 //test connection status
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
