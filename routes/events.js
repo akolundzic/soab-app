@@ -8,11 +8,11 @@ const { verifyToken } = require("../middleware/authmiddleware");
 // router.get("/:events", controller.getEvents);
 // router.get("*",checkUser);
 router.post("/postevent", verifyToken, async (req, res) => {
-  await controller.postEvents;
+  await controller.postEvents(req,res);
 });
 
 router.get("/events", verifyToken, async (req, res) => {
-  controller.getEvents(req, res);
+  controller.getEvents(req, res,{});
 });
 router.get("/events/:district", async (req, res) => {
   const district = req.params.district;

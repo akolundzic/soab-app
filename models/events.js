@@ -11,7 +11,7 @@ const eventsSchema = new Schema(
 
     venueName: {
       type: String,
-      trim: [true, "Please provide a venue name"],
+      required: [true, "Please provide a venue name"],
     },
     address: {
       street: { type: String, trim: true },
@@ -28,8 +28,8 @@ const eventsSchema = new Schema(
   },
   { collection: "events" }
 );
-eventsSchema.post("save", function (next) {
-  next();
-});
+// eventsSchema.post("save", function (next) {
+//   next();
+// });
 const eventsschema = mongoose.model("events", eventsSchema);
 module.exports = { eventsschema };

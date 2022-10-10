@@ -38,44 +38,26 @@ const getEvents = async function (req, res, filter) {
     res.status(404).json({ errors: errors });
   }
 };
-
+const testrequest = async (req, res, next) =>{
+  res.send("Test");
+};
 const postEvents = async (req, res) => {
   const {
     date,
     time,
     venueName,
-    city,
     address,
     image,
     eventName,
     description,
   } = await req.body;
   try {
-    // const identical = await eventsschema.aggregate([
-    //   {
-    //     $group: {
-    //       _id: {
-    //         venueName: "$venueName",
-    //         time: "$time",
-    //         location: "$location",
-    //         date: "$date",
-    //         event: "$event",
-    //       },
-    //       count: { $sum: 1 },
-    //     },
-    //   },
-    // ]);
-    // if (identical[1].count > 0) {
-    //   console.log(identical[1].count);
-    //   return res.status(400).json({
-    //     errors: "Event already exists, please change specific details",
-    //   });
-    // } else {
+    
+     
     await eventsschema
       .create({
         date: date,
         time: time,
-        city: city,
         venueName: venueName,
         address: {
           street: address.street,
@@ -90,7 +72,7 @@ const postEvents = async (req, res) => {
       .then((data) => {
         res.status(201).json(data);
       });
-    //end else statement
+
     // }
     //end try statement
   } catch (err) {
@@ -128,4 +110,5 @@ module.exports = {
   postEvents: postEvents,
   removeEvent: removeEvent,
   updateEvent: updateEvent,
+  testrequest: testrequest
 };
