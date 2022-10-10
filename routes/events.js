@@ -10,6 +10,9 @@ const { verifyToken } = require("../middleware/authmiddleware");
 router.post("/postevent", verifyToken, async (req, res) => {
   await controller.postEvents(req,res);
 });
+router.post("/test", async (req, res) => {
+  await controller.testrequest(req,res);
+});
 
 router.get("/events", verifyToken, async (req, res) => {
   controller.getEvents(req, res,{});
