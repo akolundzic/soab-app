@@ -6,7 +6,7 @@ const eventsSchema = new Schema(
     date: { type: Date, required: true },
     time: {
       type: String,
-      required: [true, "Please type in a location "],
+      required: [true, "Please type in the time "],
     },
 
     venueName: {

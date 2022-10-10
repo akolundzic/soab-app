@@ -10,22 +10,19 @@ const aggregationobject = {
   date: "$date",
   event: "$event",
 };
-const errors = {
-  time: "",
-  date: "",
-  eventName: "",
-};
+const errors = {};
 // const moment = require("moment");
 // pm.globals.set("today", moment().format("MM/DD/YYYY"));
-//handle errors
 const handleErrors = (err) => {
+  //duplicate error code
   if (err.message.includes("events validation failed")) {
     Object.values(err.errors).forEach(({ properties }) => {
       errors[properties.path] = properties.message;
     });
   }
-  return errors;
+ return errors;
 };
+
 
 const getEvents = async function (req, res, filter) {
   try {
@@ -35,7 +32,7 @@ const getEvents = async function (req, res, filter) {
       .then((dbModel) => res.json(dbModel));
   } catch (err) {
     const errors = handleErrors(err);
-    res.status(404).json({ errors: errors });
+    res.status(404).json(errors);
   }
 };
 const testrequest = async (req, res, next) =>{
@@ -52,8 +49,6 @@ const postEvents = async (req, res) => {
     description,
   } = await req.body;
   try {
-    
-     
     await eventsschema
       .create({
         date: date,
@@ -76,8 +71,8 @@ const postEvents = async (req, res) => {
     // }
     //end try statement
   } catch (err) {
-    const errors = handleErrors(err);
-    res.json({ errors: errors });
+    const error= handleErrors(err);
+    res.json(error);
   }
 };
 const updateEvent = async function (req, res) {
