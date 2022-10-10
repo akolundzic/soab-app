@@ -5,6 +5,19 @@
   "name": "nessi",
   "surname": "Skywalker",
   "email": "nessi@gmail.com",
-  "password": "testtest"
+  "password": "testtest",
+
+  "date":"2022-10-05T20:00:00",
+  "time":"20:00",
+  "venueName": "Soda Club",
+  "address":{
+    "street":"Hauptstrasse ",
+    "number": "22",
+    "district":"Schöneberg"
+
+  },
+  "eventName":"Gargle Blaster",
+  "description":"The Pan Galactic Gargle Blaster is an alcoholic beverage invented by ex-President of the Galaxy Zaphod Beeblebrox, considered by the Guide to be the "Best Drink in Existence." [1] Its effects are similar to having your brains smashed out by a slice of lemon wrapped round a large gold brick."
 
 }
+
