@@ -46,7 +46,7 @@ const getSingup = async (req, res) => {
 const postSignup = async (req, res) => {
   let now = new Date();
 
-  const { name, surname, email, password, image, adress } = req.body;
+  const { name, surname, email, password, image } = req.body;
   try {
     const exist = await usersschema.findOne({ email: email });
     // await usersschema.findOne({ email: email }).then(async (user) => {
@@ -75,7 +75,7 @@ const postSignup = async (req, res) => {
     }
   } catch (err) {
     const errors = handleErrors(err);
-    res.status(400).json({ errors });
+    res.status(400).json(errors );
   }
 };
 //Login
@@ -85,7 +85,7 @@ const postLogin = async (req, res, next) => {
   try {
     await usersschema.findOne({ email: email }).then((user) => {
       const passwordIsValid = bcrypt.compareSync(password, user.password);
-      const expire_cookie = maxAge * 1000; //
+      const expire_cookie = maxAge * 1000; 
       // res.json(passwordIsValid);
 
       if (!passwordIsValid) {
