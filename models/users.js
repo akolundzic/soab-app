@@ -6,19 +6,21 @@ const bcrypt = require("bcrypt");
 const usersSchema = new Schema(
   {
     name: { type: String, required: true },
-    surname: { type: String, required: true },
+    surname: {
+       type: String, 
+       required: [true,"Bitte gib deinen Nachnamen ein."] },
     date: { type: Date },
     email: {
       type: String,
-      required: [true, "Please enter a valid email address"],
+      required: true, 
       unique: true,
       lowercase: true,
-      validate: [isEmail, "Please provide valid email address"],
+      validate: [isEmail, "Bitte gib eine valide Email-Adresse ein."],
     },
     password: {
       type: String,
-      required: [true, "Please enter a password"],
-      minlength: [6, "Minum password length is 6 characters"],
+      required: [true, "Bitte gib eine Passwort ein."],
+      minlength: [6, "Minium Passwortlänge sind 6 Characters."],
     },
     // address: {
     //   street: { type: String, trim: true },
