@@ -55,7 +55,7 @@ const postSignup = async (req, res) => {
        errors.email= "Diese Email existiert schon,bitte logge dich ein.";
        errors.login=false;
       
-       res.json(errors);
+       res.json("test, deine mudda");
     } else {
       const user = await usersschema.create({
         email: email,
