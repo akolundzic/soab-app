@@ -51,8 +51,11 @@ const postSignup = async (req, res) => {
     const exist = await usersschema.findOne({ email: email });
     // await usersschema.findOne({ email: email }).then(async (user) => {
     if (exist) {
-      message["message"] = "Diese Email existiert schon,bitte logge dich ein.";
-      res.json(message);
+       const errors ={};
+       errors.email= "Diese Email existiert schon,bitte logge dich ein.";
+       errors.login=false;
+      
+       res.json(errors);
     } else {
       const user = await usersschema.create({
         email: email,
