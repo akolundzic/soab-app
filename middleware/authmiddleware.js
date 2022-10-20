@@ -8,14 +8,16 @@ const { usersschema } = require("../models/users");
 //   message: "No access rights",
 //   redirect_path: "/auth/login",
 // };
-const errors = {};
+
 const handleErrors = (err) => {
+  const errors = {};
   //duplicate error code
   if (err.code === 11000) {
     errors.email = "This is a duplicate email address";
     return errors;
   }
   if (err.message.includes("users validation failed")) {
+    errors['login'] = false;
     Object.values(err.errors).forEach(({ properties }) => {
       errors[properties.path] = properties.message;
     });
