@@ -16,8 +16,11 @@ const handleErrors = (err) => {
     errors.email = "This is a duplicate email address";
     return errors;
   }
-  if (err.message.includes("users validation failed")) {
+  if (
+    err.message.includes("users validation failed")||err.message.includes("events validation failed")
+  ) {
     errors['login'] = false;
+    
     Object.values(err.errors).forEach(({ properties }) => {
       errors[properties.path] = properties.message;
     });

@@ -3,9 +3,9 @@ const Schema = mongoose.Schema;
 
 const eventsSchema = new Schema(
   {
-    date: { type: Date, required: true },
-    time: {
-      type: String,
+    // date: { type: Date, required: true },
+    date: {
+      type: Date,
       required: [true, "Bitte gib eine Zeit ein."],
     },
 

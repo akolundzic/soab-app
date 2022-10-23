@@ -10,18 +10,19 @@ const aggregationobject = {
   date: "$date",
   event: "$event",
 };
+const { handleErrors } = require("../middleware/authmiddleware");
 const errors = {};
 // const moment = require("moment");
 // pm.globals.set("today", moment().format("MM/DD/YYYY"));
-const handleErrors = (err) => {
-  //duplicate error code
-  if (err.message.includes("events validation failed")) {
-    Object.values(err.errors).forEach(({ properties }) => {
-      errors[properties.path] = properties.message;
-    });
-  }
- return errors;
-};
+// const handleErrors = (err) => {
+//   //duplicate error code
+//   if (err.message.includes("events validation failed")) {
+//     Object.values(err.errors).forEach(({ properties }) => {
+//       errors[properties.path] = properties.message;
+//     });
+//   }
+//  return errors;
+// };
 
 
 const getEvents = async function (req, res, filter) {
@@ -41,7 +42,6 @@ const testrequest = async (req, res, next) =>{
 const postEvents = async (req, res) => {
   const {
     date,
-    time,
     venueName,
     address,
     image,
@@ -51,8 +51,8 @@ const postEvents = async (req, res) => {
   try {
     await eventsschema
       .create({
+        // date: date,
         date: date,
-        time: time,
         venueName: venueName,
         address: {
           street: address.street,
@@ -71,6 +71,7 @@ const postEvents = async (req, res) => {
     // }
     //end try statement
   } catch (err) {
+   
     const error= handleErrors(err);
     res.json(error);
   }
@@ -86,7 +87,7 @@ const updateEvent = async function (req, res) {
     res.status(422).send(err.message);
   }
 };
-const removeEvent = async function (req, res) {
+const removeEvent = async function (req,res) {
   try {
     await eventsschema
       .findById({ _id: req.params.id })
