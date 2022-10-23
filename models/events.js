@@ -6,12 +6,12 @@ const eventsSchema = new Schema(
     date: { type: Date, required: true },
     time: {
       type: String,
-      required: [true, "Please type in the time "],
+      required: [true, "Bitte gib eine Zeit ein."],
     },
 
     venueName: {
       type: String,
-      required: [true, "Please provide a venue name"],
+      required: [true, "Bitte gib den Ort ein."],
     },
     address: {
       street: { type: String, trim: true },
@@ -20,7 +20,7 @@ const eventsSchema = new Schema(
     },
     eventName: {
       type: String,
-      required: [true, "Please provide a event name"],
+      required: [true, "Bitte gib den Event-Namen ein."],
     },
     description: { type: String, trim: true },
     //url string - later on multer
