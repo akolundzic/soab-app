@@ -130,6 +130,8 @@ Event model
 ### Git
 [Server repository Link](https://github.com/vanessasti/soab-app.git)
 [Client repository Link](https://github.com/vanessasti/caya-client.git)
+### Deployment Links
+[Netifly](https://caya-app.netlify.app/)
 ### Wire Frame
 [Link](https://www.figma.com/file/XHwUNc3VVrCEH1yRpVN0Sj/Figma-Wireframe-mobile?node-id=0%3A1)
 
